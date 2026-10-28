@@ -94,11 +94,14 @@ flowchart LR
 
 ## Quick start
 
-**Requirements:** an agent that supports `SKILL.md` skills (built and tested with [Claude Code](https://claude.com/claude-code)), Python 3.9+, and Node 16+ (only for the installer).
+**Requirements:** an agent that supports `SKILL.md` skills, Python 3.9+, and Node 16+ (only for the installer).
 
 ```bash
-npx document-anything install            # user-wide: ~/.claude/skills/document-anything
-npx document-anything doctor             # checks Python and the bundled scripts
+npx document-anything install --agent claude   # default: ~/.claude/skills/document-anything
+npx document-anything install --agent copilot  # ~/.copilot/skills/document-anything
+npx document-anything install --agent gemini   # ~/.gemini/skills/document-anything
+npx document-anything install --agent codex    # ~/.agents/skills/document-anything
+npx document-anything doctor                  # checks Python and the bundled scripts
 ```
 
 Restart the agent session and ask:
@@ -117,14 +120,15 @@ The document is written in the language you ask in (pt-BR and en built in). The 
 <summary><b>Other install targets</b></summary>
 
 ```bash
-npx document-anything install --project              # ./.claude/skills/ (commit it to share with the team)
-npx document-anything install --dir ~/.codex/skills  # any agent's skills folder
-npx document-anything install --force                # replace a folder not installed by this package
+npx document-anything install --agent copilot --project  # ./.github/skills/ (commit to share with the team)
+npx document-anything install --agent agents             # shared ~/.agents/skills/ location
+npx document-anything install --dir <skills-root>        # custom host's skills directory
+npx document-anything install --force                    # replace a folder not installed by this package
 npx document-anything where                          # print the install path
 npx document-anything uninstall
 ```
 
-The installable unit is the self-contained [`skill/`](skill/) folder, so copying it into a skills directory also works.
+`--agent agents` uses the interoperable `.agents/skills` location supported by Copilot, Gemini CLI and Codex. Grok and DeepSeek do not have a verified native Agent Skills install target here; use `--dir` only if your host supports the `SKILL.md` format and its custom skills location. The installable unit is the self-contained [`skill/`](skill/) folder, so copying it into a compatible skills directory also works.
 
 </details>
 

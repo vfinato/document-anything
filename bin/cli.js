@@ -14,15 +14,22 @@ const PACKAGE_ROOT = path.resolve(__dirname, '..');
 const SKILL_SRC = path.join(PACKAGE_ROOT, 'skill');
 const MARKER = '.document-anything-install.json';
 const VERSION = require(path.join(PACKAGE_ROOT, 'package.json')).version;
+const AGENT_DIRS = {
+  claude: { user: ['.claude', 'skills'], project: ['.claude', 'skills'] },
+  copilot: { user: ['.copilot', 'skills'], project: ['.github', 'skills'] },
+  gemini: { user: ['.gemini', 'skills'], project: ['.gemini', 'skills'] },
+  codex: { user: ['.agents', 'skills'], project: ['.agents', 'skills'] },
+  agents: { user: ['.agents', 'skills'], project: ['.agents', 'skills'] },
+};
 
 const HELP = `document-anything ${VERSION}
 
 Usage:
-  document-anything install [--project] [--dir <skills-root>] [--force]
-      Copies the skill to ~/.claude/skills/${SKILL_NAME} (default), to ./.claude/skills/${SKILL_NAME}
-      with --project, or to <skills-root>/${SKILL_NAME} with --dir (other agents, e.g. ~/.codex/skills).
-  document-anything uninstall [--project] [--dir <skills-root>]
-  document-anything where [--project] [--dir <skills-root>]   Prints the install path.
+  document-anything install [--agent <name>] [--project] [--dir <skills-root>] [--force]
+      Installs for claude (default), copilot, gemini, codex, or the shared agents directory.
+      --project installs in the current repository; --dir selects a custom skills root.
+  document-anything uninstall [--agent <name>] [--project] [--dir <skills-root>]
+  document-anything where [--agent <name>] [--project] [--dir <skills-root>]   Prints the install path.
   document-anything doctor                                   Checks Python and the bundled scripts.
 
   document-anything types                                    Lists the document types.
@@ -39,11 +46,17 @@ function fail(message) {
 }
 
 function parseFlags(args) {
-  const flags = { project: false, force: false, dir: null };
+  const flags = { project: false, force: false, dir: null, agent: 'claude' };
   for (let i = 0; i < args.length; i++) {
     if (args[i] === '--project') flags.project = true;
     else if (args[i] === '--force') flags.force = true;
     else if (args[i] === '--dir') flags.dir = args[++i] || fail('--dir needs a path');
+    else if (args[i] === '--agent') {
+      flags.agent = args[++i] || fail('--agent needs a name');
+      if (!Object.prototype.hasOwnProperty.call(AGENT_DIRS, flags.agent)) {
+        fail(`unknown agent ${flags.agent}; choose ${Object.keys(AGENT_DIRS).join(', ')}`);
+      }
+    }
     else fail(`unknown option ${args[i]}`);
   }
   return flags;
@@ -52,7 +65,7 @@ function parseFlags(args) {
 function targetDir(flags) {
   if (flags.dir) return path.resolve(flags.dir.replace(/^~(?=$|[\\/])/, os.homedir()), SKILL_NAME);
   const base = flags.project ? process.cwd() : os.homedir();
-  return path.join(base, '.claude', 'skills', SKILL_NAME);
+  return path.join(base, ...AGENT_DIRS[flags.agent][flags.project ? 'project' : 'user'], SKILL_NAME);
 }
 
 function copyDir(src, dst) {
@@ -119,7 +132,7 @@ function doctor() {
   console.log(`package    ${VERSION} (${PACKAGE_ROOT})`);
   console.log(`node       ${process.version}`);
   console.log(`python     ${py ? `${py.version} (${[py.cmd, ...py.pre].join(' ')})` : 'NOT FOUND (need >= 3.9)'}`);
-  for (const flags of [{}, { project: true }]) {
+  for (const flags of [{ agent: 'claude' }, { agent: 'claude', project: true }]) {
     const dst = targetDir(flags);
     console.log(`${flags.project ? 'project' : 'user'}    ${fs.existsSync(dst) ? 'installed' : 'not installed'} at ${dst}`);
   }

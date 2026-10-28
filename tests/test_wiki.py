@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -17,6 +18,7 @@ FIXTURE = ROOT / "tests" / "fixtures" / "orders-service"
 WIKI = FIXTURE / "docs" / "wiki" / "orders-service.md"
 FIXTURES = ROOT / "tests" / "fixtures"
 PROCESS_DOC = FIXTURES / "month-end-close" / "docs" / "process" / "fechamento-mensal.md"
+CLI = ROOT / "bin" / "cli.js"
 sys.path.insert(0, str(SCRIPTS))
 
 import new_doc  # noqa: E402
@@ -28,6 +30,39 @@ import wikilib  # noqa: E402
 
 def render(md: str, tags=()) -> str:
     return wikilib.render_document(md, tags=list(tags)).body_html
+
+
+class InstallerTests(unittest.TestCase):
+    def test_agent_install_paths_for_user_and_project(self):
+        agents = {
+            "claude": ((".claude", "skills"), (".claude", "skills")),
+            "copilot": ((".copilot", "skills"), (".github", "skills")),
+            "gemini": ((".gemini", "skills"), (".gemini", "skills")),
+            "codex": ((".agents", "skills"), (".agents", "skills")),
+            "agents": ((".agents", "skills"), (".agents", "skills")),
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            home = root / "home"
+            project = root / "project"
+            home.mkdir()
+            project.mkdir()
+            env = os.environ.copy()
+            env.update({"HOME": str(home), "USERPROFILE": str(home)})
+
+            for agent, (user_parts, project_parts) in agents.items():
+                with self.subTest(agent=agent, scope="user"):
+                    result = subprocess.run(
+                        ["node", str(CLI), "where", "--agent", agent],
+                        cwd=project, env=env, capture_output=True, text=True, check=True,
+                    )
+                    self.assertEqual(Path(result.stdout.strip()), home.joinpath(*user_parts, "document-anything"))
+                with self.subTest(agent=agent, scope="project"):
+                    result = subprocess.run(
+                        ["node", str(CLI), "where", "--agent", agent, "--project"],
+                        cwd=project, env=env, capture_output=True, text=True, check=True,
+                    )
+                    self.assertEqual(Path(result.stdout.strip()), project.joinpath(*project_parts, "document-anything"))
 
 
 class InlineTests(unittest.TestCase):

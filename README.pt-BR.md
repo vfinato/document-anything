@@ -78,11 +78,14 @@ Todo documento é um par com o mesmo conteúdo:
 
 ## Começo rápido
 
-**Requisitos:** um agente que suporte skills `SKILL.md` (feita e testada com o [Claude Code](https://claude.com/claude-code)), Python 3.9+ e Node 16+ (este só para o instalador).
+**Requisitos:** um agente que suporte skills `SKILL.md`, Python 3.9+ e Node 16+ (este só para o instalador).
 
 ```bash
-npx document-anything install            # para o usuário: ~/.claude/skills/document-anything
-npx document-anything doctor             # confere o Python e os scripts
+npx document-anything install --agent claude   # padrão: ~/.claude/skills/document-anything
+npx document-anything install --agent copilot  # ~/.copilot/skills/document-anything
+npx document-anything install --agent gemini   # ~/.gemini/skills/document-anything
+npx document-anything install --agent codex    # ~/.agents/skills/document-anything
+npx document-anything doctor                  # confere o Python e os scripts
 ```
 
 Reinicie a sessão do agente e peça:
@@ -96,6 +99,22 @@ Reinicie a sessão do agente e peça:
 > Atualize a documentação. *(relê só o que mudou desde o `source_commit` ou o `as_of` do documento)*
 
 O documento sai no idioma do pedido (pt-BR e en embutidos). A skill escreve apenas os dois arquivos do documento. Ela nunca faz commit, push, deploy ou chamada a APIs de nuvem sem você pedir.
+
+<details>
+<summary><b>Outros destinos de instalação</b></summary>
+
+```bash
+npx document-anything install --agent copilot --project  # ./.github/skills/ (commit para compartilhar com o time)
+npx document-anything install --agent agents             # local compartilhado ~/.agents/skills/
+npx document-anything install --dir <skills-root>        # diretório customizado de outro host
+npx document-anything install --force                    # substitui pasta não instalada por este pacote
+npx document-anything where                              # mostra o caminho de instalação
+npx document-anything uninstall
+```
+
+`--agent agents` usa o caminho interoperável `.agents/skills`, suportado pelo Copilot, Gemini CLI e Codex. Não há aqui um destino nativo de Agent Skills confirmado para Grok e DeepSeek; use `--dir` somente se o host aceitar o formato `SKILL.md` e tiver um local customizável para skills. A pasta [`skill/`](skill/) é autocontida; copiá-la para um diretório compatível também funciona.
+
+</details>
 
 ## Os gates
 
