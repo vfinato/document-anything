@@ -186,7 +186,8 @@ def main(argv=None) -> int:
         print(f"ERROR: {args.output} exists; update it instead of starting over (or pass --force)", file=sys.stderr)
         return 2
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(skeleton(bp, lang, args.title, args.subject, args.repo), encoding="utf-8", newline="\n")
+    with args.output.open("w", encoding="utf-8", newline="\n") as output:
+        output.write(skeleton(bp, lang, args.title, args.subject, args.repo))
     print(f"OK: wrote {args.output} ({args.type}, {lang}, {len(bp['sections'])} sections)")
     return 0
 

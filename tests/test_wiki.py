@@ -321,6 +321,7 @@ class BlueprintTests(unittest.TestCase):
                 with tempfile.TemporaryDirectory() as tmp:
                     path = Path(tmp) / "doc.md"
                     self.assertEqual(new_doc.main(["--type", name, "--lang", lang, "--title", "T", "--subject", "s", "-o", str(path)]), 0)
+                    self.assertNotIn(b"\r\n", path.read_bytes(), f"{name}/{lang}: expected LF line endings")
                     report, _ = validate_wiki.validate(path, [], check_html_pair=False)
                     checks = {i["check"] for i in report.errors}
                     self.assertNotIn("structure", checks, f"{name}/{lang}: {[i for i in report.errors if i['check'] == 'structure']}")
