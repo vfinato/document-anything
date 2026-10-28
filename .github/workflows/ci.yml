@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    name: Python ${{ matrix.python }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python: ["3.9", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Unit and end-to-end tests
+        run: python -m unittest discover -s tests -v
+      - name: CLI doctor
+        run: node bin/cli.js doctor
+      - name: Sample documents pass their own gates
+        run: |
+          node bin/cli.js validate tests/fixtures/orders-service/docs/wiki/orders-service.md --repo tests/fixtures/orders-service
+          node bin/cli.js validate tests/fixtures/month-end-close/docs/process/fechamento-mensal.md
+      - name: Package contents
+        run: npm pack --dry-run
