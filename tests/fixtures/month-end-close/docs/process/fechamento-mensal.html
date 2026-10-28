@@ -1,0 +1,640 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="document-anything 1.0.0">
+<meta name="wiki-source" content="fechamento-mensal.md">
+<meta name="wiki-source-sha256" content="77820591e93d7d8cebac7fdbe9b77361a0e563a0be8fa052c8fed43e3ecb5dee">
+<title>Fechamento Contábil Mensal</title>
+<style>
+:root {
+  --bg: #f7f7f5;
+  --surface: #ffffff;
+  --surface-2: #f1f1ee;
+  --text: #1d1f23;
+  --muted: #5d636d;
+  --border: #deded9;
+  --accent: #1f5fbf;
+  --accent-soft: #e6eefb;
+  --mark: #fff0a8;
+  --code-bg: #f3f3f0;
+  --ok: #17803d; --ok-bg: #e2f5e8;
+  --warn: #a15c00; --warn-bg: #fff1dc;
+  --bad: #b3261e; --bad-bg: #fde7e5;
+  --imp: #6b3fb3; --imp-bg: #efe8fb;
+  --t0: #1f5fbf; --t0-bg: #e6eefb;
+  --t1: #17803d; --t1-bg: #e2f5e8;
+  --t2: #9a5b00; --t2-bg: #fff1dc;
+  --t3: #6b3fb3; --t3-bg: #efe8fb;
+  --t4: #0f766e; --t4-bg: #dff5f2;
+  --t5: #b3261e; --t5-bg: #fde7e5;
+  --t6: #a3306f; --t6-bg: #fbe6f1;
+  --t7: #44505f; --t7-bg: #e9edf2;
+  --shadow: 0 1px 2px rgba(0,0,0,.05), 0 2px 8px rgba(0,0,0,.04);
+  --radius: 10px;
+  --sidebar: 300px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #15171a; --surface: #1c1f23; --surface-2: #23272c; --text: #e7e8ea; --muted: #a2a8b1;
+    --border: #33383f; --accent: #7fb0ff; --accent-soft: #1f2d44; --mark: #6b5a00; --code-bg: #23272c;
+    --ok: #6fd699; --ok-bg: #173222; --warn: #ffb95c; --warn-bg: #3a2a12; --bad: #ff8a80; --bad-bg: #3d1d1b;
+    --imp: #c4a6ff; --imp-bg: #2c2340;
+    --t0: #7fb0ff; --t0-bg: #1f2d44; --t1: #6fd699; --t1-bg: #173222; --t2: #ffb95c; --t2-bg: #3a2a12;
+    --t3: #c4a6ff; --t3-bg: #2c2340; --t4: #5fd4c6; --t4-bg: #14302d; --t5: #ff8a80; --t5-bg: #3d1d1b;
+    --t6: #f59ac9; --t6-bg: #3a1d2d; --t7: #b3bfcc; --t7-bg: #262c33;
+    --shadow: none;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #15171a; --surface: #1c1f23; --surface-2: #23272c; --text: #e7e8ea; --muted: #a2a8b1;
+  --border: #33383f; --accent: #7fb0ff; --accent-soft: #1f2d44; --mark: #6b5a00; --code-bg: #23272c;
+  --ok: #6fd699; --ok-bg: #173222; --warn: #ffb95c; --warn-bg: #3a2a12; --bad: #ff8a80; --bad-bg: #3d1d1b;
+  --imp: #c4a6ff; --imp-bg: #2c2340;
+  --t0: #7fb0ff; --t0-bg: #1f2d44; --t1: #6fd699; --t1-bg: #173222; --t2: #ffb95c; --t2-bg: #3a2a12;
+  --t3: #c4a6ff; --t3-bg: #2c2340; --t4: #5fd4c6; --t4-bg: #14302d; --t5: #ff8a80; --t5-bg: #3d1d1b;
+  --t6: #f59ac9; --t6-bg: #3a1d2d; --t7: #b3bfcc; --t7-bg: #262c33;
+  --shadow: none;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 16px; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font: 15.5px/1.62 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ---------- layout ---------- */
+.layout { display: grid; grid-template-columns: var(--sidebar) minmax(0, 1fr); min-height: 100vh; }
+aside.sidebar {
+  position: sticky; top: 0; height: 100vh; overflow-y: auto; border-right: 1px solid var(--border);
+  background: var(--surface); padding: 18px 16px 40px;
+}
+.brand { font-weight: 700; font-size: 15px; letter-spacing: .2px; margin-bottom: 2px; }
+.brand-sub { color: var(--muted); font-size: 12.5px; margin-bottom: 6px; }
+.brand-meta { color: var(--muted); font-size: 11.5px; margin-bottom: 14px; }
+.controls { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+.search { position: relative; }
+.search input {
+  width: 100%; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border);
+  background: var(--bg); color: var(--text); font-size: 14px;
+}
+.search input:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+.search-info { font-size: 12px; color: var(--muted); min-height: 16px; margin-top: 4px; }
+.seg { display: flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.seg button {
+  flex: 1 1 auto; border: 0; background: transparent; color: var(--muted); padding: 6px 6px; font-size: 12px; white-space: nowrap;
+  cursor: pointer; border-right: 1px solid var(--border);
+}
+.seg button:last-child { border-right: 0; }
+.seg button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.row-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+.btn {
+  border: 1px solid var(--border); background: var(--surface); color: var(--text); border-radius: 7px;
+  padding: 5px 9px; font-size: 12.5px; cursor: pointer;
+}
+.btn:hover { border-color: var(--accent); color: var(--accent); }
+nav.toc ul { list-style: none; margin: 0; padding: 0; }
+nav.toc .toc-l1 > li { margin: 10px 0 2px; }
+nav.toc .toc-l1 > li > a { font-weight: 650; color: var(--text); font-size: 13.5px; }
+nav.toc .toc-l2 { margin: 3px 0 0 2px; border-left: 1px solid var(--border); }
+nav.toc .toc-l2 a { display: block; padding: 2px 0 2px 10px; color: var(--muted); font-size: 13px; line-height: 1.4; }
+nav.toc a.active { color: var(--accent) !important; font-weight: 600; }
+nav.toc .toc-l2 a.active { border-left: 2px solid var(--accent); margin-left: -1px; }
+nav.toc li.hidden { display: none; }
+
+main { padding: 28px 44px 80px; max-width: 1080px; width: 100%; }
+.topbar { display: none; }
+
+/* ---------- tipografia ---------- */
+h1, h2, h3, h4 { line-height: 1.28; letter-spacing: -.01em; }
+h1 { font-size: 30px; margin: 46px 0 8px; padding-bottom: 10px; border-bottom: 2px solid var(--border); }
+.part:first-child h1:first-child { margin-top: 4px; }
+h2 { font-size: 23px; margin: 38px 0 10px; }
+h3 { font-size: 18px; margin: 26px 0 8px; }
+h4 { font-size: 15.5px; margin: 20px 0 6px; color: var(--muted); }
+p { margin: 8px 0 12px; }
+ul, ol { padding-left: 22px; }
+li { margin: 3px 0; }
+li.task { list-style: none; margin-left: -20px; }
+li.task input { margin-right: 6px; }
+hr { border: 0; border-top: 1px solid var(--border); margin: 28px 0; }
+img { max-width: 100%; }
+blockquote {
+  margin: 14px 0; padding: 10px 14px; border-left: 4px solid var(--accent); background: var(--accent-soft);
+  border-radius: 0 8px 8px 0;
+}
+blockquote p { margin: 4px 0; }
+blockquote.callout .callout-title { font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: .05em; }
+blockquote.callout.tip { border-color: var(--ok); background: var(--ok-bg); }
+blockquote.callout.tip .callout-title { color: var(--ok); }
+blockquote.callout.important { border-color: var(--imp); background: var(--imp-bg); }
+blockquote.callout.important .callout-title { color: var(--imp); }
+blockquote.callout.warning { border-color: var(--warn); background: var(--warn-bg); }
+blockquote.callout.warning .callout-title { color: var(--warn); }
+blockquote.callout.caution { border-color: var(--bad); background: var(--bad-bg); }
+blockquote.callout.caution .callout-title { color: var(--bad); }
+blockquote.callout.note .callout-title { color: var(--accent); }
+code {
+  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace; font-size: .88em;
+  background: var(--code-bg); padding: 1px 5px; border-radius: 5px; word-break: break-word;
+}
+pre { background: var(--code-bg); padding: 12px 14px; border-radius: 8px; overflow-x: auto; border: 1px solid var(--border); position: relative; }
+pre code { background: none; padding: 0; font-size: 13px; word-break: normal; }
+pre .copy {
+  position: absolute; top: 6px; right: 6px; font-size: 11.5px; padding: 2px 8px; opacity: 0; transition: opacity .15s;
+}
+pre:hover .copy, pre .copy:focus { opacity: 1; }
+section.sec { scroll-margin-top: 12px; }
+
+/* ---------- tabelas ---------- */
+.table-wrap { overflow-x: auto; margin: 12px 0 18px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--border); }
+th { background: var(--surface-2); font-weight: 650; position: sticky; top: 0; white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+tbody tr:hover td { background: var(--surface-2); }
+
+/* ---------- expansíveis ---------- */
+details {
+  border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface);
+  margin: 10px 0; box-shadow: var(--shadow);
+}
+details > summary {
+  cursor: pointer; padding: 10px 14px; font-weight: 600; list-style: none; display: flex; align-items: center; gap: 8px;
+}
+details > summary::-webkit-details-marker { display: none; }
+details > summary::before {
+  content: ""; width: 7px; height: 7px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted);
+  transform: rotate(-45deg); transition: transform .15s; flex: none; margin-right: 2px;
+}
+details[open] > summary::before { transform: rotate(45deg); }
+details[open] > summary { border-bottom: 1px solid var(--border); }
+details > :not(summary) { margin-left: 16px; margin-right: 16px; }
+details > :last-child { margin-bottom: 14px; }
+
+/* ---------- cartões ---------- */
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px; margin: 14px 0 20px; }
+.card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 14px 12px;
+  box-shadow: var(--shadow);
+}
+.card-title { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 650; }
+.card-value { font-size: 19px; font-weight: 700; margin: 4px 0 4px; line-height: 1.25; }
+.card-desc { font-size: 13px; color: var(--muted); line-height: 1.45; }
+
+/* ---------- etiquetas ---------- */
+.tag {
+  display: inline-block; font-size: 11.5px; font-weight: 700; padding: 0 7px; border-radius: 999px; line-height: 19px;
+  vertical-align: 1px; letter-spacing: .02em;
+}
+.tag.t0 { color: var(--t0); background: var(--t0-bg); }
+.tag.t1 { color: var(--t1); background: var(--t1-bg); }
+.tag.t2 { color: var(--t2); background: var(--t2-bg); }
+.tag.t3 { color: var(--t3); background: var(--t3-bg); }
+.tag.t4 { color: var(--t4); background: var(--t4-bg); }
+.tag.t5 { color: var(--t5); background: var(--t5-bg); }
+.tag.t6 { color: var(--t6); background: var(--t6-bg); }
+.tag.t7 { color: var(--t7); background: var(--t7-bg); }
+
+/* ---------- diagramas ---------- */
+.diagram { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; margin: 14px 0 20px; overflow-x: auto; }
+.diagram pre.mermaid { background: none; border: 0; padding: 0; margin: 0; text-align: center; white-space: pre; }
+.diagram pre.mermaid:not([data-processed]) { text-align: left; font-size: 12.5px; color: var(--muted); }
+
+mark { background: var(--mark); color: inherit; padding: 0 1px; border-radius: 2px; }
+.hidden-by-filter, .search-empty { display: none !important; }
+.to-top {
+  position: fixed; right: 18px; bottom: 18px; width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border);
+  background: var(--surface); color: var(--text); cursor: pointer; box-shadow: var(--shadow); font-size: 18px; display: none;
+}
+.to-top.show { display: block; }
+footer.doc-footer { margin-top: 56px; padding-top: 14px; border-top: 1px solid var(--border); color: var(--muted); font-size: 12.5px; }
+
+/* ---------- responsivo ---------- */
+@media (max-width: 960px) {
+  .layout { grid-template-columns: 1fr; }
+  aside.sidebar { position: fixed; inset: 0 auto 0 0; width: min(88vw, 340px); z-index: 20; transform: translateX(-102%); transition: transform .2s; box-shadow: 0 0 30px rgba(0,0,0,.25); }
+  body.nav-open aside.sidebar { transform: none; }
+  .topbar {
+    display: flex; position: sticky; top: 0; z-index: 10; align-items: center; gap: 10px; padding: 10px 16px;
+    background: var(--surface); border-bottom: 1px solid var(--border);
+  }
+  .topbar .title { font-weight: 650; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  main { padding: 18px 16px 70px; }
+  h1 { font-size: 25px; } h2 { font-size: 20px; }
+}
+@media print {
+  aside.sidebar, .topbar, .to-top, pre .copy { display: none !important; }
+  .layout { display: block; }
+  main { max-width: none; padding: 0; }
+  details { box-shadow: none; }
+  .hidden-by-filter, .search-empty { display: block !important; }
+}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <button class="btn" id="navToggle" aria-label="Sumário">☰ Sumário</button>
+  <span class="title">Fechamento Contábil Mensal</span>
+</div>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">Fechamento Contábil Mensal</div>
+    <div class="brand-sub">Como a controladoria fecha o mês, do corte de lançamentos à entrega do balancete</div>
+    <div class="brand-meta">Atualizado em 23/10/2026</div>
+    <div class="controls">
+      <div class="search">
+        <input id="q" type="search" placeholder="Buscar no documento…" autocomplete="off" aria-label="Buscar no documento…">
+        <div class="search-info" id="searchInfo"></div>
+      </div>
+      <div class="seg" role="group" aria-label="Filtrar visão">
+        <button data-view="all" aria-pressed="true">Tudo</button>
+        <button data-view="overview" aria-pressed="false">Visão geral</button>
+        <button data-view="detail" aria-pressed="false">Passo a passo</button>
+      </div>
+      <div class="row-btns">
+        <button class="btn" id="expandAll">Expandir tudo</button>
+        <button class="btn" id="collapseAll">Recolher tudo</button>
+        <button class="btn" id="themeBtn" aria-label="Alternar tema">◐ Tema</button>
+      </div>
+    </div>
+    <nav class="toc" id="toc"><ul class="toc-l1"><li class="l1"><a href="#fechamento-contábil-mensal">Fechamento Contábil Mensal</a><ul class="toc-l2"><li class="l2"><a href="#como-ler-este-documento">Como ler este documento</a></li></ul></li><li class="l1"><a href="#parte-i-visão-geral">Parte I — Visão geral</a><ul class="toc-l2"><li class="l2"><a href="#resumo-em-uma-página">Resumo em uma página</a></li><li class="l2"><a href="#objetivo-e-gatilho">Objetivo e gatilho</a></li><li class="l2"><a href="#escopo">Escopo</a></li><li class="l2"><a href="#papéis">Papéis</a></li><li class="l2"><a href="#fluxo-de-ponta-a-ponta">Fluxo de ponta a ponta</a></li><li class="l2"><a href="#onde-estamos">Onde estamos</a></li><li class="l2"><a href="#perguntas-frequentes">Perguntas frequentes</a></li></ul></li><li class="l1"><a href="#parte-ii-passo-a-passo">Parte II — Passo a passo</a><ul class="toc-l2"><li class="l2"><a href="#etapas">Etapas</a></li><li class="l2"><a href="#matriz-raci">Matriz RACI</a></li><li class="l2"><a href="#sistemas-e-ferramentas">Sistemas e ferramentas</a></li><li class="l2"><a href="#regras-e-políticas">Regras e políticas</a></li><li class="l2"><a href="#exceções-e-escalonamento">Exceções e escalonamento</a></li><li class="l2"><a href="#prazos-e-indicadores">Prazos e indicadores</a></li><li class="l2"><a href="#controles-e-conformidade">Controles e conformidade</a></li><li class="l2"><a href="#documentos-e-modelos">Documentos e modelos</a></li></ul></li><li class="l1"><a href="#parte-iii-apoio">Parte III — Apoio</a><ul class="toc-l2"><li class="l2"><a href="#riscos-e-dívidas">Riscos e dívidas</a></li><li class="l2"><a href="#perguntas-em-aberto">Perguntas em aberto</a></li><li class="l2"><a href="#glossário">Glossário</a></li><li class="l2"><a href="#referências">Referências</a></li></ul></li></ul></nav>
+  </aside>
+  <main id="content">
+<div class="part" data-part="intro">
+<h1 id="fechamento-contábil-mensal">Fechamento Contábil Mensal</h1>
+<blockquote>
+<p><strong>O que é este documento.</strong> A fonte de verdade sobre o fechamento contábil mensal: o que é, por que existe e como funciona, conforme as fontes de 23/10/2026.</p>
+<p><strong>Para quem é.</strong> Qualquer pessoa que precise executar, aprovar, auditar ou melhorar o fechamento sem depender de quem o conhece hoje.</p>
+</blockquote>
+<section class="sec" data-section="about"><h2 id="como-ler-este-documento">Como ler este documento</h2>
+<ul>
+<li><strong>Parte I — Visão geral.</strong> O essencial, sem exigir conhecimento contábil aprofundado.</li>
+<li><strong>Parte II — Passo a passo.</strong> O detalhe para quem executa e aprova cada etapa.</li>
+<li><strong>Parte III — Apoio.</strong> Riscos, perguntas em aberto, glossário e referências.</li>
+</ul>
+<p><strong>Convenções.</strong> Datas no formato dia/mês/ano; "D+n" é o n-ésimo dia útil do mês seguinte ao fechado. Termos e siglas estão no <a href="#glossário">Glossário</a>.</p>
+</section>
+</div>
+<div class="part" data-part="overview">
+<h1 id="parte-i-visão-geral">Parte I — Visão geral</h1>
+<section class="sec" data-section="summary"><h2 id="resumo-em-uma-página">Resumo em uma página</h2>
+<div class="cards"><div class="card"><div class="card-title">Objetivo</div><div class="card-value">Balancete fechado até D+5</div><div class="card-desc">O mês só é considerado fechado depois da aprovação do controller.</div></div><div class="card"><div class="card-title">Gatilho</div><div class="card-value">Último dia útil do mês</div><div class="card-desc">O corte de lançamentos acontece às 18h.</div></div><div class="card"><div class="card-title">Responsável</div><div class="card-value">Controller</div><div class="card-desc">Aprova o balancete e os ajustes acima da alçada.</div></div><div class="card"><div class="card-title">Sistema principal</div><div class="card-value">SAP FI</div><div class="card-desc">Todos os lançamentos e conciliações acontecem nele.</div></div><div class="card"><div class="card-title">Situação</div><div class="card-value">Documentado e medido</div><div class="card-desc">O prazo de D+5 foi cumprido em 9 dos últimos 12 meses.</div></div></div>
+<p><strong>Em uma frase:</strong> no último dia útil o mês é cortado, as equipes conciliam bancos e provisões até D+3, o analista monta o balancete e o controller o aprova até D+5.</p>
+</section>
+<section class="sec" data-section="purpose"><h2 id="objetivo-e-gatilho">Objetivo e gatilho</h2>
+<p>O fechamento existe para entregar à diretoria e à auditoria um balancete confiável do mês até o 5º dia útil seguinte. Ele começa automaticamente no último dia útil do mês, com o corte de lançamentos às 18h, e termina quando o controller aprova o balancete no SAP.</p>
+</section>
+<section class="sec" data-section="scope"><h2 id="escopo">Escopo</h2>
+<p>Vale para as duas empresas do grupo no Brasil, todos os meses. Não cobre o fechamento anual (que tem etapas extras de auditoria externa) nem as subsidiárias no exterior, que fecham pelo processo da matriz.</p>
+</section>
+<section class="sec" data-section="roles"><h2 id="papéis">Papéis</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Papel</th><th>Responsabilidade</th><th>Quem exerce hoje</th></tr></thead>
+<tbody>
+<tr><td>Analista contábil</td><td>Executa cortes, conciliações e monta o balancete</td><td>Equipe de contabilidade (3 pessoas)</td></tr>
+<tr><td>Analista de tesouraria</td><td>Envia extratos e explica divergências bancárias</td><td>Equipe de tesouraria</td></tr>
+<tr><td>Controller</td><td>Aprova ajustes acima da alçada e o balancete final</td><td>Marina Souza</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="sec" data-section="flow"><h2 id="fluxo-de-ponta-a-ponta">Fluxo de ponta a ponta</h2>
+<div class="diagram"><pre class="mermaid">flowchart TD
+    A["Corte de lançamentos&lt;br/&gt;último dia útil, 18h"] --&gt; B["Conciliação bancária&lt;br/&gt;até D+2"]
+    B --&gt; C["Provisões e ajustes&lt;br/&gt;até D+3"]
+    C --&gt; D{"Ajuste acima de R$ 10 mil?"}
+    D -- "Sim" --&gt; E["Aprovação do controller"]
+    D -- "Não" --&gt; F["Balancete"]
+    E --&gt; F
+    F --&gt; G["Aprovação final&lt;br/&gt;até D+5"]</pre></div>
+<ol>
+<li>O analista contábil bloqueia novos lançamentos no último dia útil, às 18h.</li>
+<li>Com os extratos da tesouraria, o analista concilia os bancos até D+2.</li>
+<li>Até D+3 entram provisões e ajustes; os acima de R$ 10.000,00 precisam do controller.</li>
+<li>O analista monta o balancete e o controller o aprova até D+5.</li>
+</ol>
+</section>
+<section class="sec" data-section="status"><h2 id="onde-estamos">Onde estamos</h2>
+<p>Em 23/10/2026: o processo é documentado e medido. O prazo de D+5 foi cumprido em 9 dos últimos 12 meses; os atrasos vieram da conciliação bancária. A automação da importação de extratos está planejada, sem data.</p>
+</section>
+<section class="sec" data-section="faq-business"><h2 id="perguntas-frequentes">Perguntas frequentes</h2>
+<details>
+<summary>Posso lançar algo depois do corte?</summary>
+<p>Só com autorização do controller, registrada no chamado do fechamento.</p>
+</details>
+<details>
+<summary>Quem aprova um ajuste de R$ 15 mil?</summary>
+<p>O controller, conforme a Política de Alçadas Financeiras v2.</p>
+</details>
+<details>
+<summary>O que acontece se o fechamento passar de D+5?</summary>
+<p>O controller decide entre aprovar com a diferença em conta transitória ou adiar; a decisão fica registrada no chamado do mês.</p>
+</details>
+</section>
+</div>
+<div class="part" data-part="detail">
+<h1 id="parte-ii-passo-a-passo">Parte II — Passo a passo</h1>
+<section class="sec" data-section="steps"><h2 id="etapas">Etapas</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>#</th><th>Etapa</th><th>Responsável</th><th>Entrada</th><th>Saída</th><th>Sistema / ferramenta</th><th>Prazo</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Corte de lançamentos</td><td>Analista contábil</td><td>Calendário de fechamento</td><td>Período bloqueado no SAP</td><td>SAP FI (OB52)</td><td>Último dia útil, 18h</td></tr>
+<tr><td>2</td><td>Envio de extratos</td><td>Analista de tesouraria</td><td>Extratos bancários do mês</td><td>Extratos na pasta do fechamento</td><td>Internet banking</td><td>D+1</td></tr>
+<tr><td>3</td><td>Conciliação bancária</td><td>Analista contábil</td><td>Extratos e razão de bancos</td><td>Conciliação assinada</td><td>SAP FI (FF67)</td><td>D+2</td></tr>
+<tr><td>4</td><td>Provisões e ajustes</td><td>Analista contábil</td><td>Relatórios de provisões</td><td>Lançamentos de ajuste</td><td>SAP FI</td><td>D+3</td></tr>
+<tr><td>5</td><td>Aprovação de ajustes acima da alçada</td><td>Controller</td><td>Ajustes acima de R$ 10.000,00</td><td>Ajustes aprovados</td><td>E-mail com evidência</td><td>D+3</td></tr>
+<tr><td>6</td><td>Balancete e aprovação final</td><td>Controller</td><td>Balancete preliminar</td><td>Balancete aprovado</td><td>SAP FI</td><td>D+5</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="sec" data-section="raci"><h2 id="matriz-raci">Matriz RACI</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Etapa</th><th>Analista contábil</th><th>Analista de tesouraria</th><th>Controller</th></tr></thead>
+<tbody>
+<tr><td>1. Corte de lançamentos</td><td>R/A</td><td>I</td><td>I</td></tr>
+<tr><td>2. Envio de extratos</td><td>I</td><td>R/A</td><td>—</td></tr>
+<tr><td>3. Conciliação bancária</td><td>R/A</td><td>C</td><td>I</td></tr>
+<tr><td>4. Provisões e ajustes</td><td>R/A</td><td>—</td><td>C</td></tr>
+<tr><td>5. Aprovação de ajustes</td><td>R</td><td>—</td><td>A</td></tr>
+<tr><td>6. Balancete e aprovação final</td><td>R</td><td>—</td><td>A</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="sec" data-section="systems-tools"><h2 id="sistemas-e-ferramentas">Sistemas e ferramentas</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Sistema / ferramenta</th><th>Usado em</th><th>Para quê</th><th>Acesso</th></tr></thead>
+<tbody>
+<tr><td>SAP FI</td><td>Etapas 1, 3, 4 e 6</td><td>Lançamentos, conciliações e balancete</td><td>Perfil de contabilidade, pedido ao TI</td></tr>
+<tr><td>Internet banking</td><td>Etapa 2</td><td>Extratos</td><td>Perfil de tesouraria</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="sec" data-section="business-rules"><h2 id="regras-e-políticas">Regras e políticas</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Regra</th><th>Detalhe</th><th>Motivo</th></tr></thead>
+<tbody>
+<tr><td>Alçada de ajustes</td><td>Ajustes acima de R$ 10.000,00 exigem aprovação do controller</td><td>Política de Alçadas Financeiras v2</td></tr>
+<tr><td>Prazo de fechamento</td><td>Balancete aprovado até D+5</td><td>Calendário da diretoria</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="sec" data-section="exceptions"><h2 id="exceções-e-escalonamento">Exceções e escalonamento</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Etapa</th><th>O que pode dar errado</th><th>Caminho alternativo</th><th>Quem decide</th><th>Fonte</th></tr></thead>
+<tbody>
+<tr><td>2. Envio de extratos</td><td>Extrato não chega até D+1</td><td>O analista contábil cobra a tesouraria e avisa o controller</td><td>Controller</td><td>Manual de Fechamento Contábil v3 (PDF, 11/2025)</td></tr>
+<tr><td>3. Conciliação bancária</td><td>Conciliação não fecha até D+2</td><td>Diferença em conta transitória ou adiamento do fechamento, registrado no chamado</td><td>Controller</td><td>Entrevista com Marina Souza (controller), 20/10/2026</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="sec" data-section="sla-metrics"><h2 id="prazos-e-indicadores">Prazos e indicadores</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Indicador</th><th>Definição</th><th>Meta</th><th>Fonte do dado</th><th>Quem acompanha</th></tr></thead>
+<tbody>
+<tr><td>Prazo de fechamento</td><td>Dias úteis entre o fim do mês e a aprovação do balancete</td><td>≤ 5</td><td>Data de aprovação no SAP</td><td>Controller</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="sec" data-section="controls"><h2 id="controles-e-conformidade">Controles e conformidade</h2>
+<p>Toda conciliação é assinada pelo analista e guardada na pasta do fechamento por 5 anos. As aprovações de ajustes acima da alçada ficam no e-mail anexado ao chamado do mês.</p>
+</section>
+<section class="sec" data-section="artifacts"><h2 id="documentos-e-modelos">Documentos e modelos</h2>
+<p>O modelo de conciliação bancária e o checklist do fechamento ficam na pasta compartilhada da controladoria, conforme o Manual de Fechamento Contábil v3.</p>
+</section>
+</div>
+<div class="part" data-part="appendix">
+<h1 id="parte-iii-apoio">Parte III — Apoio</h1>
+<section class="sec" data-section="risks"><h2 id="riscos-e-dívidas">Riscos e dívidas</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Risco</th><th>Impacto</th><th>Severidade</th><th>Mitigação ou situação</th></tr></thead>
+<tbody>
+<tr><td>Uma única pessoa no papel de controller</td><td>Fechamento parado nas férias</td><td>Alta</td><td>Definir substituto formal</td></tr>
+<tr><td>Importação manual de extratos</td><td>Atrasos na conciliação</td><td>Média</td><td>Automação planejada</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="sec" data-section="open-questions"><h2 id="perguntas-em-aberto">Perguntas em aberto</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Pergunta</th><th>Por que importa</th><th>Quem pode responder</th></tr></thead>
+<tbody>
+<tr><td>Quem substitui o controller nas férias?</td><td>Sem substituto, ajustes acima da alçada ficam parados</td><td>Diretoria financeira</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="sec" data-section="glossary"><h2 id="glossário">Glossário</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Termo</th><th>Significado</th></tr></thead>
+<tbody>
+<tr><td>Balancete</td><td>Relatório com os saldos de todas as contas no fim do mês</td></tr>
+<tr><td>D+n</td><td>n-ésimo dia útil após o fim do mês</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="sec" data-section="references"><h2 id="referências">Referências</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Fonte</th><th>Para que serviu</th></tr></thead>
+<tbody>
+<tr><td>Manual de Fechamento Contábil v3 (PDF, 11/2025)</td><td>Etapas, prazos e controles</td></tr>
+<tr><td>Política de Alçadas Financeiras v2 (02/2025)</td><td>Alçada de ajustes</td></tr>
+<tr><td>Entrevista com Marina Souza (controller), 20/10/2026</td><td>Papéis atuais, exceções e situação</td></tr>
+</tbody>
+</table></div>
+<p><strong>Como este documento é mantido.</strong> O <code>.md</code> é a fonte de verdade e o <code>.html</code> é gerado a partir dele pela skill <code>document-anything</code>.</p>
+</section>
+</div>
+<footer class="doc-footer">Gerado por document-anything 1.0.0 a partir de <code>fechamento-mensal.md</code>. O Markdown é a fonte; edite-o e gere esta página novamente.</footer>
+  </main>
+</div>
+<button class="to-top" id="toTop" aria-label="Voltar ao topo">↑</button>
+<script>window.WIKI_I18N = {"found": "{s} seção(ões) · {n} ocorrência(s)", "notFound": "Nada encontrado", "copy": "Copiar", "copied": "Copiado"};</script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script>
+(function () {
+  var I18N = window.WIKI_I18N || {};
+  var root = document.documentElement;
+  var store = {
+    get: function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+    set: function (k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  };
+
+  /* ---------- theme ---------- */
+  var saved = store.get('wiki-theme');
+  if (saved === 'dark' || saved === 'light') root.setAttribute('data-theme', saved);
+  function isDark() {
+    var t = root.getAttribute('data-theme');
+    if (t) return t === 'dark';
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+
+  /* ---------- mermaid (CDN; without it the diagram source stays readable) ---------- */
+  var diagrams = Array.prototype.slice.call(document.querySelectorAll('pre.mermaid'));
+  diagrams.forEach(function (d) { d.setAttribute('data-src', d.textContent); });
+  function renderDiagrams() {
+    if (!window.mermaid || !diagrams.length) return;
+    diagrams.forEach(function (d) {
+      d.removeAttribute('data-processed');
+      d.innerHTML = '';
+      d.textContent = d.getAttribute('data-src');
+    });
+    try {
+      window.mermaid.initialize({ startOnLoad: false, theme: isDark() ? 'dark' : 'default', securityLevel: 'strict',
+        flowchart: { htmlLabels: true, curve: 'basis' }, sequence: { useMaxWidth: true } });
+      window.mermaid.run({ nodes: diagrams });
+    } catch (e) { /* keep the source text visible */ }
+  }
+  renderDiagrams();
+
+  document.getElementById('themeBtn').addEventListener('click', function () {
+    var next = isDark() ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    store.set('wiki-theme', next);
+    renderDiagrams();
+  });
+
+  /* ---------- view filter (overview / detail) ---------- */
+  var parts = document.querySelectorAll('.part');
+  var viewBtns = document.querySelectorAll('.seg button');
+  function applyView(v) {
+    viewBtns.forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-view') === v)); });
+    parts.forEach(function (p) {
+      var kind = p.getAttribute('data-part');
+      var show = v === 'all' || kind === v || (kind !== 'overview' && kind !== 'detail');
+      p.classList.toggle('hidden-by-filter', !show);
+    });
+    syncToc();
+    store.set('wiki-view', v);
+  }
+  viewBtns.forEach(function (b) { b.addEventListener('click', function () { applyView(b.getAttribute('data-view')); }); });
+
+  /* ---------- table of contents ---------- */
+  var tocLinks = Array.prototype.slice.call(document.querySelectorAll('nav.toc a'));
+  function targetOf(a) { return document.getElementById(decodeURIComponent(a.getAttribute('href').slice(1))); }
+  function syncToc() {
+    tocLinks.forEach(function (a) {
+      var target = targetOf(a);
+      var hidden = !target || target.closest('.hidden-by-filter, .search-empty');
+      a.parentElement.classList.toggle('hidden', !!hidden);
+    });
+  }
+  var headings = tocLinks.map(targetOf).filter(Boolean);
+  if ('IntersectionObserver' in window) {
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) {
+          tocLinks.forEach(function (a) { a.classList.toggle('active', targetOf(a) === en.target); });
+        }
+      });
+    }, { rootMargin: '0px 0px -75% 0px' });
+    headings.forEach(function (h) { obs.observe(h); });
+  }
+
+  /* ---------- expand / collapse ---------- */
+  function setAll(open) { document.querySelectorAll('details').forEach(function (d) { d.open = open; }); }
+  document.getElementById('expandAll').addEventListener('click', function () { setAll(true); });
+  document.getElementById('collapseAll').addEventListener('click', function () { setAll(false); });
+  window.addEventListener('beforeprint', function () { setAll(true); });
+
+  /* ---------- copy buttons on code blocks ---------- */
+  document.querySelectorAll('pre > code').forEach(function (code) {
+    var btn = document.createElement('button');
+    btn.className = 'btn copy';
+    btn.type = 'button';
+    btn.textContent = I18N.copy || 'Copy';
+    btn.addEventListener('click', function () {
+      var done = function () { btn.textContent = I18N.copied || 'Copied'; setTimeout(function () { btn.textContent = I18N.copy || 'Copy'; }, 1400); };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(code.textContent).then(done, function () {});
+    });
+    code.parentNode.appendChild(btn);
+  });
+
+  /* ---------- search ---------- */
+  var q = document.getElementById('q');
+  var info = document.getElementById('searchInfo');
+  var sections = Array.prototype.slice.call(document.querySelectorAll('section.sec'));
+  var marks = [];
+  function clearMarks() {
+    marks.forEach(function (m) {
+      var p = m.parentNode; if (!p) return;
+      p.replaceChild(document.createTextNode(m.textContent), m); p.normalize();
+    });
+    marks = [];
+  }
+  function highlight(node, term) {
+    var walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT, {
+      acceptNode: function (n) {
+        if (!n.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+        var tag = n.parentNode && n.parentNode.nodeName;
+        if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'MARK' || tag === 'BUTTON') return NodeFilter.FILTER_REJECT;
+        if (n.parentNode.closest && n.parentNode.closest('.diagram')) return NodeFilter.FILTER_REJECT;
+        return n.nodeValue.toLowerCase().indexOf(term) >= 0 ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+      }
+    });
+    var list = []; while (walker.nextNode()) list.push(walker.currentNode);
+    list.forEach(function (t) {
+      var val = t.nodeValue, low = val.toLowerCase(), i = 0, idx, frag = document.createDocumentFragment();
+      while ((idx = low.indexOf(term, i)) >= 0) {
+        frag.appendChild(document.createTextNode(val.slice(i, idx)));
+        var m = document.createElement('mark'); m.textContent = val.slice(idx, idx + term.length);
+        frag.appendChild(m); marks.push(m); i = idx + term.length;
+      }
+      frag.appendChild(document.createTextNode(val.slice(i)));
+      t.parentNode.replaceChild(frag, t);
+    });
+  }
+  function openAncestors(el) {
+    var d = el.closest('details'); while (d) { d.open = true; d = d.parentElement && d.parentElement.closest('details'); }
+  }
+  var timer;
+  q.addEventListener('input', function () {
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      clearMarks();
+      var term = q.value.trim().toLowerCase();
+      if (term.length < 2) {
+        sections.forEach(function (s) { s.classList.remove('hidden-by-filter'); });
+        parts.forEach(function (p) { p.classList.remove('search-empty'); });
+        info.textContent = ''; syncToc(); return;
+      }
+      var hits = 0;
+      sections.forEach(function (s) {
+        var match = s.textContent.toLowerCase().indexOf(term) >= 0;
+        s.classList.toggle('hidden-by-filter', !match);
+        if (match) { hits++; highlight(s, term); }
+      });
+      parts.forEach(function (p) {
+        var own = p.querySelectorAll('section.sec');
+        var none = own.length > 0 && !p.querySelector('section.sec:not(.hidden-by-filter)');
+        p.classList.toggle('search-empty', none);
+      });
+      marks.forEach(openAncestors);
+      info.textContent = hits
+        ? (I18N.found || '{s} section(s) · {n} match(es)').replace('{s}', hits).replace('{n}', marks.length)
+        : (I18N.notFound || 'Nothing found');
+      syncToc();
+      if (marks[0]) marks[0].scrollIntoView({ block: 'center' });
+    }, 220);
+  });
+
+  /* ---------- mobile navigation and back-to-top ---------- */
+  document.getElementById('navToggle').addEventListener('click', function () { document.body.classList.toggle('nav-open'); });
+  tocLinks.forEach(function (a) { a.addEventListener('click', function () { document.body.classList.remove('nav-open'); }); });
+  var toTop = document.getElementById('toTop');
+  window.addEventListener('scroll', function () { toTop.classList.toggle('show', window.scrollY > 800); }, { passive: true });
+  toTop.addEventListener('click', function () { window.scrollTo({ top: 0 }); });
+
+  /* ---------- open <details> when navigating to an anchor inside it ---------- */
+  function openTarget() {
+    var id = decodeURIComponent(location.hash.slice(1)); if (!id) return;
+    var el = document.getElementById(id); if (el) openAncestors(el);
+  }
+  window.addEventListener('hashchange', openTarget); openTarget();
+
+  var v = store.get('wiki-view'); applyView(v === 'overview' || v === 'detail' ? v : 'all');
+})();
+</script>
+</body>
+</html>

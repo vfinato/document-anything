@@ -1,0 +1,2 @@
+{ "name": "@acme/money", "version": "2.1.0", "main": "dist/index.js", "types": "dist/index.d.ts",
+  "scripts": { "build": "tsc", "test": "vitest" }, "devDependencies": { "typescript": "5.5.0", "vitest": "2.0.0" } }

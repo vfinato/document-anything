@@ -1,0 +1,121 @@
+{
+  "type": "service",
+  "family": "code",
+  "label": {
+    "pt-BR": "Serviço / API",
+    "en": "Service / API"
+  },
+  "summary": "A deployable service: API, worker, consumer or function app, usually with its own infrastructure as code.",
+  "view_labels": {
+    "pt-BR": [
+      "Tudo",
+      "Negócio",
+      "Técnico"
+    ],
+    "en": [
+      "All",
+      "Business",
+      "Technical"
+    ]
+  },
+  "parts": {
+    "overview": {
+      "pt-BR": "Parte I — Visão de negócio",
+      "en": "Part I — Business view"
+    },
+    "detail": {
+      "pt-BR": "Parte II — Visão técnica",
+      "en": "Part II — Technical view"
+    }
+  },
+  "sections": {
+    "intro": [
+      "about"
+    ],
+    "overview": [
+      "summary",
+      "problem",
+      "capabilities",
+      "context",
+      "flow",
+      "journeys?",
+      "lifecycle?",
+      "business-rules",
+      "status",
+      "faq-business"
+    ],
+    "detail": [
+      "architecture",
+      "codebase",
+      "data-model",
+      "api",
+      "messaging",
+      "jobs",
+      "integrations",
+      "code-walkthrough",
+      "client-sdk?",
+      "configuration",
+      "security",
+      "observability",
+      "run-local",
+      "tests",
+      "deploy",
+      "dev-decisions",
+      "history?"
+    ],
+    "appendix": [
+      "production-gaps?",
+      "risks",
+      "open-questions",
+      "faq-technical",
+      "troubleshooting",
+      "glossary",
+      "references"
+    ]
+  },
+  "coverage": {
+    "kinds": [
+      "environment",
+      "iac_parameter",
+      "iac_resource",
+      "env_var",
+      "config_key",
+      "parameter_ref",
+      "route",
+      "schedule",
+      "pipeline",
+      "local_dependency",
+      "test_suite",
+      "plaintext_secret"
+    ],
+    "home": {
+      "environment": [
+        "configuration"
+      ],
+      "iac_parameter": [
+        "configuration"
+      ],
+      "route": [
+        "api"
+      ],
+      "schedule": [
+        "jobs"
+      ],
+      "messaging_resource": [
+        "messaging"
+      ],
+      "config_key": [
+        "configuration"
+      ],
+      "test_suite": [
+        "tests"
+      ],
+      "plaintext_secret": {
+        "all": [
+          "security",
+          "risks"
+        ]
+      }
+    }
+  }
+}

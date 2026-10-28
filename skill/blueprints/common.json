@@ -1,0 +1,507 @@
+{
+  "$comment": "Section catalog shared by every type. A type file lists which of these it uses (by id) and may add or override sections. checks: cards (>= 4 cards), mermaid (a diagram), table (a table), code (a shell command block), example (any non-diagram code block), table-complete (no empty cells in the section's tables).",
+  "parts": {
+    "overview": {
+      "pt-BR": "Parte I — Visão geral",
+      "en": "Part I — Overview"
+    },
+    "detail": {
+      "pt-BR": "Parte II — Visão detalhada",
+      "en": "Part II — Detailed view"
+    },
+    "appendix": {
+      "pt-BR": "Parte III — Apoio",
+      "en": "Part III — Appendix"
+    }
+  },
+  "sections": {
+    "about": {
+      "title": {
+        "pt-BR": "Como ler este documento",
+        "en": "How to read this document"
+      },
+      "must": "How the parts are organised, the tag legend table when tags are used, conventions (date format, time zone, 'no secrets are reproduced; the document says where each value lives and who provides it')."
+    },
+    "summary": {
+      "title": {
+        "pt-BR": "Resumo em uma página",
+        "en": "One-page summary"
+      },
+      "checks": [
+        "cards"
+      ],
+      "must": "Card grid with 4-10 cards with the facts a newcomer needs first (goal, who uses it, scale, cadence, status, critical dependency...). When the sources name no owner or value for a card, write 'Em aberto' / 'Open' and add an open question. Close with an 'In one sentence:' line."
+    },
+    "problem": {
+      "title": {
+        "pt-BR": "O problema de negócio",
+        "en": "The business problem"
+      },
+      "must": "Why it exists: the situation before, what goes wrong without it, what it delivers (numbered list of outcomes)."
+    },
+    "capabilities": {
+      "title": {
+        "pt-BR": "O que faz",
+        "en": "What it does"
+      },
+      "must": "Capabilities in business terms, each with who uses it and through what (API, screen, job, package). End with what it explicitly does not do."
+    },
+    "context": {
+      "title": {
+        "pt-BR": "Sistemas envolvidos",
+        "en": "Systems involved"
+      },
+      "checks": [
+        "table"
+      ],
+      "columns": {
+        "pt-BR": [
+          "Sistema",
+          "Papel",
+          "Como se relaciona",
+          "Time responsável"
+        ],
+        "en": [
+          "System",
+          "Role",
+          "Relationship",
+          "Owner team"
+        ]
+      },
+      "must": "Every neighbour: system, role, direction (calls us / we call / event), owner team. Users and external partners included."
+    },
+    "flow": {
+      "title": {
+        "pt-BR": "Fluxo de ponta a ponta",
+        "en": "End-to-end flow"
+      },
+      "checks": [
+        "mermaid"
+      ],
+      "must": "Mermaid flowchart of the main journey through all systems, then numbered prose walking through it."
+    },
+    "journeys": {
+      "title": {
+        "pt-BR": "Jornadas por público",
+        "en": "Journeys by audience"
+      },
+      "must": "One collapsible block per audience (end user, operator, support): what they see and do, step by step."
+    },
+    "lifecycle": {
+      "title": {
+        "pt-BR": "Ciclo de vida",
+        "en": "Lifecycle"
+      },
+      "checks": [
+        "mermaid"
+      ],
+      "must": "State diagram of the main entity (persisted status values with their numeric codes) and what moves it between states.",
+      "skeleton_diagram": "stateDiagram-v2\n    [*] --> «Estado»"
+    },
+    "business-rules": {
+      "title": {
+        "pt-BR": "Regras e decisões de negócio",
+        "en": "Business rules and decisions"
+      },
+      "checks": [
+        "table"
+      ],
+      "columns": {
+        "pt-BR": [
+          "Regra",
+          "Detalhe",
+          "Motivo"
+        ],
+        "en": [
+          "Rule",
+          "Detail",
+          "Reason"
+        ]
+      },
+      "must": "Every rule enforced that a business person would care about (limits, validations, eligibility, time windows, time zones), each with the reason when known."
+    },
+    "status": {
+      "title": {
+        "pt-BR": "Onde estamos",
+        "en": "Current status"
+      },
+      "must": "The first sentence carries the date ('Em 31/01/2026: ...'); never put the date in the heading. What is live and where, what is pending, the last relevant change.",
+      "checks": [
+        "dated"
+      ]
+    },
+    "faq-business": {
+      "title": {
+        "pt-BR": "Perguntas frequentes",
+        "en": "FAQ"
+      },
+      "must": "3-12 questions a user, operator or approver would really ask, as collapsible blocks, answered from the sources (no invented questions about things the sources do not cover).",
+      "checks": [
+        "faq"
+      ]
+    },
+    "architecture": {
+      "title": {
+        "pt-BR": "Arquitetura",
+        "en": "Architecture"
+      },
+      "checks": [
+        "mermaid"
+      ],
+      "must": "Mermaid diagram of runtime components (functions/containers/apps, queues, topics, databases, external systems) with the direction of every call/event; then a table of deployable units (name, type, trigger, runtime, timeout/memory when set). Name IaC resources by their logical id."
+    },
+    "codebase": {
+      "title": {
+        "pt-BR": "Organização do código",
+        "en": "Codebase"
+      },
+      "checks": [
+        "table"
+      ],
+      "columns": {
+        "pt-BR": [
+          "Projeto / pasta",
+          "Responsabilidade"
+        ],
+        "en": [
+          "Project / folder",
+          "Responsibility"
+        ]
+      },
+      "must": "Solution/module layout, layering, the pattern every feature follows, key libraries and why."
+    },
+    "data-model": {
+      "title": {
+        "pt-BR": "Modelo de dados",
+        "en": "Data model"
+      },
+      "na": true,
+      "must": "Datastores, tables/collections with purpose and key columns, indexes and uniqueness, an ER diagram when there are >= 3 entities, migrations (tool, folder, how they run, list in order), shared/legacy databases read or written."
+    },
+    "api": {
+      "title": {
+        "pt-BR": "Contratos da API",
+        "en": "API contracts"
+      },
+      "na": true,
+      "checks": [
+        "table"
+      ],
+      "columns": {
+        "pt-BR": [
+          "Método",
+          "Rota",
+          "Finalidade",
+          "Autorização",
+          "Respostas"
+        ],
+        "en": [
+          "Method",
+          "Route",
+          "Purpose",
+          "Authorization",
+          "Responses"
+        ]
+      },
+      "must": "Every route with method and path on the same row: purpose, auth/permission, main responses. One collapsible block per route with sanitised request/response examples and error codes. Base URLs per environment."
+    },
+    "messaging": {
+      "title": {
+        "pt-BR": "Eventos e mensageria",
+        "en": "Events and messaging"
+      },
+      "na": true,
+      "must": "Every queue/topic/stream: name per environment, producer, consumer, payload example, retry/DLQ policy, ordering and idempotency."
+    },
+    "jobs": {
+      "title": {
+        "pt-BR": "Processos automáticos",
+        "en": "Scheduled and background processes"
+      },
+      "na": true,
+      "checks": [
+        "table"
+      ],
+      "columns": {
+        "pt-BR": [
+          "Processo",
+          "Gatilho",
+          "O que faz",
+          "Timeout",
+          "Em caso de falha",
+          "Como rodar à mão"
+        ],
+        "en": [
+          "Process",
+          "Trigger",
+          "What it does",
+          "Timeout",
+          "On failure",
+          "How to run by hand"
+        ]
+      },
+      "must": "Every scheduled or background process. Translate triggers for humans: AWS cron() is UTC, so give the local time too; rate() has no wall-clock time ('every hour, counted from the deploy'); in-process schedulers (Hangfire, Quartz, Celery beat, cron libraries) use the server's time zone unless configured."
+    },
+    "integrations": {
+      "title": {
+        "pt-BR": "Integrações externas",
+        "en": "External integrations"
+      },
+      "na": true,
+      "checks": [
+        "table"
+      ],
+      "columns": {
+        "pt-BR": [
+          "Dependência",
+          "Protocolo / cliente",
+          "Para que usamos",
+          "Autenticação",
+          "Timeout / novas tentativas",
+          "Se estiver fora do ar"
+        ],
+        "en": [
+          "Dependency",
+          "Protocol / client",
+          "What we use it for",
+          "Authentication",
+          "Timeout / retries",
+          "When it is down"
+        ]
+      },
+      "must": "Every external dependency and what happens when it fails."
+    },
+    "code-walkthrough": {
+      "title": {
+        "pt-BR": "Explicação do código",
+        "en": "Code walkthrough"
+      },
+      "must": "Flow by flow (one collapsible block each): entry point -> steps -> side effects, naming the files. Explain the non-obvious decisions in the code."
+    },
+    "client-sdk": {
+      "title": {
+        "pt-BR": "Pacote cliente",
+        "en": "Client package"
+      },
+      "must": "Published SDK/client: name, feed/registry, how it is generated and versioned, how consumers update."
+    },
+    "configuration": {
+      "title": {
+        "pt-BR": "Configuração por ambiente",
+        "en": "Configuration per environment"
+      },
+      "checks": [
+        "table"
+      ],
+      "must": "(1) Overview table: kind of setting -> where it lives -> how it changes. (2) How configuration is loaded and its precedence. (3) Per environment, a collapsible block with every parameter/secret to create: environment, full name/path, value or source (never a secret value), type, who provides it, status. (4) Values fixed by IaC/build. (5) Feature flags. (6) Infrastructure changes still needed. (7) Deployment parameters and how each environment sets them. When a prefix exists but nothing loads it, list the keys and send the decision to open-questions.",
+      "skeleton": {
+        "pt-BR": "### Onde vive cada tipo de configuração\n\n| Tipo | Onde vive | Como muda |\n| --- | --- | --- |\n| «…» | «…» | «…» |\n\n### Como a configuração é carregada\n\n«…»\n\n### Parâmetros e segredos por ambiente\n\n<details markdown=\"1\">\n<summary>«AMBIENTE» — «prefixo ou local»</summary>\n\n| Ambiente | Nome | Valor ou origem | Tipo | Quem fornece | Situação |\n| --- | --- | --- | --- | --- | --- |\n| «…» | «…» | «…» | «…» | «…» | «…» |\n\n</details>\n\n### Valores fixados pela infraestrutura ou pelo build\n\n«…»\n\n### Chaves de funcionalidade\n\n«…»\n\n### Mudanças de infraestrutura ainda necessárias\n\n«…»\n",
+        "en": "### Where each kind of setting lives\n\n| Kind | Where it lives | How it changes |\n| --- | --- | --- |\n| «…» | «…» | «…» |\n\n### How configuration is loaded\n\n«…»\n\n### Parameters and secrets per environment\n\n<details markdown=\"1\">\n<summary>«ENVIRONMENT» — «prefix or location»</summary>\n\n| Environment | Name | Value or source | Type | Provided by | Status |\n| --- | --- | --- | --- | --- | --- |\n| «…» | «…» | «…» | «…» | «…» | «…» |\n\n</details>\n\n### Values fixed by infrastructure or build\n\n«…»\n\n### Feature flags\n\n«…»\n\n### Infrastructure changes still needed\n\n«…»\n"
+      }
+    },
+    "security": {
+      "title": {
+        "pt-BR": "Segurança e permissões",
+        "en": "Security and permissions"
+      },
+      "must": "Authentication and authorization (scheme, issuer, permissions per route/screen), runtime permissions (IAM), network placement, data protection (PII, encryption, retention), plaintext credentials found in the repo and the recommended action (never the values)."
+    },
+    "observability": {
+      "title": {
+        "pt-BR": "Observabilidade",
+        "en": "Observability"
+      },
+      "must": "Where logs go and a ready-to-use query, metrics, alarms, traces, dashboards, correlation ids, what a healthy run looks like."
+    },
+    "run-local": {
+      "title": {
+        "pt-BR": "Como rodar localmente",
+        "en": "Running locally"
+      },
+      "checks": [
+        "code"
+      ],
+      "must": "Prerequisites with versions, local dependencies, local configuration, step-by-step shell commands (each block labelled as run, copied or derived), how to call/open it locally, seed data, common local problems."
+    },
+    "tests": {
+      "title": {
+        "pt-BR": "Testes",
+        "en": "Tests"
+      },
+      "checks": [
+        "code"
+      ],
+      "must": "Strategy (unit/integration/e2e and what each covers), shell commands per suite (labelled as run, copied or derived), what each suite needs, manual test scripts for the main flows (Given/When/Then), last verified run (date + result)."
+    },
+    "deploy": {
+      "title": {
+        "pt-BR": "Deploy, rollout e rollback",
+        "en": "Deploy, rollout and rollback"
+      },
+      "must": "Pipelines (file, trigger, stages, environments, approvals), versioning, how to deploy, how to roll back, post-deploy checks, data migrations and cut-over steps."
+    },
+    "dev-decisions": {
+      "title": {
+        "pt-BR": "Decisões técnicas",
+        "en": "Technical decisions"
+      },
+      "checks": [
+        "table"
+      ],
+      "columns": {
+        "pt-BR": [
+          "Decisão",
+          "Contexto / motivo",
+          "Alternativas descartadas",
+          "Consequência",
+          "Fonte"
+        ],
+        "en": [
+          "Decision",
+          "Context / reason",
+          "Alternatives rejected",
+          "Consequence",
+          "Source"
+        ]
+      },
+      "must": "ADR-style: decision, reason, alternatives rejected, consequence, source (commit/doc)."
+    },
+    "history": {
+      "title": {
+        "pt-BR": "Histórico",
+        "en": "History"
+      },
+      "checks": [
+        "table"
+      ],
+      "columns": {
+        "pt-BR": [
+          "Data",
+          "Mudança",
+          "Referência"
+        ],
+        "en": [
+          "Date",
+          "Change",
+          "Reference"
+        ]
+      },
+      "must": "Timeline of significant changes built from git history, docs or the sources."
+    },
+    "production-gaps": {
+      "title": {
+        "pt-BR": "Pendências para produção",
+        "en": "Production readiness gaps"
+      },
+      "must": "Checklist of what is still missing before (or after) going live, with owner."
+    },
+    "risks": {
+      "title": {
+        "pt-BR": "Riscos e dívidas",
+        "en": "Risks and debt"
+      },
+      "checks": [
+        "table"
+      ],
+      "columns": {
+        "pt-BR": [
+          "Risco",
+          "Impacto",
+          "Severidade",
+          "Mitigação ou situação"
+        ],
+        "en": [
+          "Risk",
+          "Impact",
+          "Severity",
+          "Mitigation or status"
+        ]
+      },
+      "must": "Risk, impact, severity, mitigation/status. Severity is the writer's judgment, stated as such: Alta/High (stops the work, financial, legal or security impact), Média/Medium (degrades or delays), Baixa/Low (inconvenience). Includes plaintext credential files, single points of failure, missing tests or controls, known bugs."
+    },
+    "open-questions": {
+      "title": {
+        "pt-BR": "Perguntas em aberto",
+        "en": "Open questions"
+      },
+      "na": true,
+      "checks": [
+        "table"
+      ],
+      "columns": {
+        "pt-BR": [
+          "Pergunta",
+          "Por que importa",
+          "Quem pode responder"
+        ],
+        "en": [
+          "Question",
+          "Why it matters",
+          "Who can answer"
+        ]
+      },
+      "must": "Everything the sources could not answer, each with who can answer it. Never guess; put the gap here. Mark na only when there are none."
+    },
+    "faq-technical": {
+      "title": {
+        "pt-BR": "Perguntas e respostas técnicas",
+        "en": "Technical FAQ"
+      },
+      "must": "3-12 questions a new engineer asks in week one, as collapsible blocks, answered with file refs.",
+      "checks": [
+        "faq"
+      ]
+    },
+    "troubleshooting": {
+      "title": {
+        "pt-BR": "Solução de problemas",
+        "en": "Troubleshooting"
+      },
+      "checks": [
+        "table"
+      ],
+      "columns": {
+        "pt-BR": [
+          "Sintoma",
+          "Causa provável",
+          "Como confirmar",
+          "Como resolver"
+        ],
+        "en": [
+          "Symptom",
+          "Likely cause",
+          "How to confirm",
+          "How to fix"
+        ]
+      },
+      "must": "Symptom -> likely cause -> how to confirm (log query, metric, SQL) -> fix. Built from error handling, DLQs and known incidents."
+    },
+    "glossary": {
+      "title": {
+        "pt-BR": "Glossário",
+        "en": "Glossary"
+      },
+      "checks": [
+        "table"
+      ],
+      "columns": {
+        "pt-BR": [
+          "Termo",
+          "Significado"
+        ],
+        "en": [
+          "Term",
+          "Meaning"
+        ]
+      },
+      "must": "Business terms, technical terms and acronyms used anywhere in the document."
+    },
+    "references": {
+      "title": {
+        "pt-BR": "Referências",
+        "en": "References"
+      },
+      "must": "Map of the documents, repos, dashboards, tickets and people this document was built from, plus a short note on how it is maintained (the .md is the source, the .html is generated by document-anything)."
+    }
+  }
+}

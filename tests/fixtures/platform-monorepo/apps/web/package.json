@@ -1,0 +1,1 @@
+{ "name": "@platform/web", "private": true, "scripts": { "dev": "next dev" }, "dependencies": { "next": "14.2.0", "react": "18.3.1" } }

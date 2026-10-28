@@ -1,0 +1,171 @@
+{
+  "type": "infra",
+  "family": "code",
+  "label": {
+    "pt-BR": "Infraestrutura (IaC)",
+    "en": "Infrastructure (IaC)"
+  },
+  "summary": "A repository of infrastructure as code: Terraform, CDK, CloudFormation/SAM, Pulumi, Helm, Kubernetes manifests, Ansible.",
+  "view_labels": {
+    "pt-BR": [
+      "Tudo",
+      "Visão geral",
+      "Técnico"
+    ],
+    "en": [
+      "All",
+      "Overview",
+      "Technical"
+    ]
+  },
+  "sections": {
+    "intro": [
+      "about"
+    ],
+    "overview": [
+      "summary",
+      "problem",
+      "context",
+      "architecture",
+      "status"
+    ],
+    "detail": [
+      "resources-inventory",
+      "environments",
+      "networking",
+      "security",
+      "observability",
+      "cost?",
+      "development",
+      "tests",
+      "deploy",
+      "dev-decisions",
+      "history?"
+    ],
+    "appendix": [
+      "production-gaps?",
+      "risks",
+      "open-questions",
+      "troubleshooting",
+      "glossary",
+      "references"
+    ]
+  },
+  "extra_sections": {
+    "resources-inventory": {
+      "title": {
+        "pt-BR": "Inventário de recursos",
+        "en": "Resource inventory"
+      },
+      "checks": [
+        "table"
+      ],
+      "columns": {
+        "pt-BR": [
+          "Recurso",
+          "Tipo",
+          "Para que serve",
+          "Ambientes",
+          "Quem usa"
+        ],
+        "en": [
+          "Resource",
+          "Type",
+          "Purpose",
+          "Environments",
+          "Used by"
+        ]
+      },
+      "must": "Every resource or module the code creates, by its logical id/name: type, purpose, environments, consumers. Group by stack/module."
+    },
+    "environments": {
+      "title": {
+        "pt-BR": "Ambientes e parâmetros",
+        "en": "Environments and parameters"
+      },
+      "checks": [
+        "table"
+      ],
+      "must": "Every environment/workspace/stack instance, the parameters/variables each sets (never secret values), where state lives (backend, locking), accounts/subscriptions/projects and regions."
+    },
+    "networking": {
+      "title": {
+        "pt-BR": "Rede",
+        "en": "Networking"
+      },
+      "na": true,
+      "must": "VPCs/VNets, subnets, routing, peering/transit, DNS, ingress/egress, firewalls/security groups, private endpoints. Diagram when non-trivial."
+    },
+    "cost": {
+      "title": {
+        "pt-BR": "Custos",
+        "en": "Cost"
+      },
+      "must": "Main cost drivers, tagging strategy, budgets/alerts, known savings opportunities."
+    },
+    "development": {
+      "title": {
+        "pt-BR": "Como trabalhar localmente",
+        "en": "Working locally"
+      },
+      "checks": [
+        "code"
+      ],
+      "must": "Tool versions, authentication to the cloud (profile/role, never credentials), format/validate/lint/plan commands, how to preview a change safely. Shell blocks labelled as run, copied or derived."
+    }
+  },
+  "overrides": {
+    "problem": {
+      "title": {
+        "pt-BR": "Para que serve",
+        "en": "Purpose"
+      },
+      "must": "What this infrastructure supports, who depends on it, what breaks if it goes away."
+    },
+    "architecture": {
+      "must": "Diagram of the main resources and how traffic/data flows between them, per environment when they differ."
+    },
+    "deploy": {
+      "must": "How changes are applied (pipeline, plan review, approvals, apply), drift detection, state handling, rollback strategy, blast-radius rules, change windows."
+    },
+    "tests": {
+      "na": true,
+      "must": "Policy checks (cfn-guard, OPA, tfsec, checkov), unit/integration tests (Terratest, cdk assertions), plan-diff review; shell commands per check. Mark na only when there are none and say so in risks."
+    },
+    "context": {
+      "must": "Applications and teams that consume this infrastructure, and other infra repos it depends on or feeds (shared VPC, DNS zones, accounts)."
+    }
+  },
+  "coverage": {
+    "kinds": [
+      "environment",
+      "iac_parameter",
+      "iac_resource",
+      "parameter_ref",
+      "schedule",
+      "pipeline",
+      "plaintext_secret"
+    ],
+    "home": {
+      "iac_resource": [
+        "resources-inventory"
+      ],
+      "iac_parameter": [
+        "environments"
+      ],
+      "environment": [
+        "environments"
+      ],
+      "parameter_ref": [
+        "environments",
+        "security"
+      ],
+      "plaintext_secret": {
+        "all": [
+          "security",
+          "risks"
+        ]
+      }
+    }
+  }
+}

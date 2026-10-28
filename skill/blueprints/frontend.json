@@ -1,0 +1,187 @@
+{
+  "type": "frontend",
+  "family": "code",
+  "label": {
+    "pt-BR": "Frontend",
+    "en": "Frontend"
+  },
+  "summary": "A web or mobile user interface: SPA, SSR/SSG site, micro-frontend or app.",
+  "view_labels": {
+    "pt-BR": [
+      "Tudo",
+      "Produto",
+      "Técnico"
+    ],
+    "en": [
+      "All",
+      "Product",
+      "Technical"
+    ]
+  },
+  "parts": {
+    "overview": {
+      "pt-BR": "Parte I — Visão de produto",
+      "en": "Part I — Product view"
+    },
+    "detail": {
+      "pt-BR": "Parte II — Visão técnica",
+      "en": "Part II — Technical view"
+    }
+  },
+  "sections": {
+    "intro": [
+      "about"
+    ],
+    "overview": [
+      "summary",
+      "problem",
+      "capabilities",
+      "journeys",
+      "context",
+      "flow",
+      "business-rules",
+      "status",
+      "faq-business"
+    ],
+    "detail": [
+      "architecture",
+      "codebase",
+      "routes-screens",
+      "state-data",
+      "backend-apis",
+      "ui-system",
+      "configuration",
+      "security",
+      "observability",
+      "run-local",
+      "tests",
+      "deploy",
+      "dev-decisions",
+      "history?"
+    ],
+    "appendix": [
+      "production-gaps?",
+      "risks",
+      "open-questions",
+      "faq-technical",
+      "troubleshooting",
+      "glossary",
+      "references"
+    ]
+  },
+  "extra_sections": {
+    "routes-screens": {
+      "title": {
+        "pt-BR": "Rotas e telas",
+        "en": "Routes and screens"
+      },
+      "checks": [
+        "table"
+      ],
+      "columns": {
+        "pt-BR": [
+          "Rota",
+          "Tela",
+          "Para que serve",
+          "Acesso"
+        ],
+        "en": [
+          "Route",
+          "Screen",
+          "Purpose",
+          "Access"
+        ]
+      },
+      "must": "Every route/page: path, screen/component, purpose, who can access it (guards, roles), data it loads."
+    },
+    "state-data": {
+      "title": {
+        "pt-BR": "Estado e dados",
+        "en": "State and data"
+      },
+      "must": "State management (store, context, signals), data fetching and caching (query library, revalidation, SSR/SSG), forms and validation, offline/persistence."
+    },
+    "backend-apis": {
+      "title": {
+        "pt-BR": "APIs consumidas",
+        "en": "Backend APIs"
+      },
+      "na": true,
+      "checks": [
+        "table"
+      ],
+      "columns": {
+        "pt-BR": [
+          "API / serviço",
+          "Chamadas principais",
+          "Autenticação",
+          "Base URL por ambiente"
+        ],
+        "en": [
+          "API / service",
+          "Main calls",
+          "Authentication",
+          "Base URL per environment"
+        ]
+      },
+      "must": "Every backend called: what for, client/module that calls it, auth, base URL per environment, error handling shown to the user."
+    },
+    "ui-system": {
+      "title": {
+        "pt-BR": "Design system, acessibilidade e idiomas",
+        "en": "Design system, accessibility and i18n"
+      },
+      "must": "Component library/design system, styling approach, accessibility practices and known gaps, internationalisation (languages, how strings are managed), responsive/browser support."
+    }
+  },
+  "overrides": {
+    "configuration": {
+      "must": "Build-time and runtime configuration per environment (env files, public env prefixes like VITE_/NEXT_PUBLIC_/REACT_APP_, environment.ts files, runtime config endpoints): which values are public by construction, which must never be put there, who provides each."
+    },
+    "deploy": {
+      "must": "Build command and output, hosting (CDN/static host/container/app store), environments, cache invalidation, feature flags, rollback, post-deploy smoke checks."
+    },
+    "security": {
+      "must": "Authentication flow (OIDC/redirects/tokens), where tokens are stored, route guards, CSP and headers, secrets that must never reach the bundle, PII shown on screen, plaintext credentials found (paths only)."
+    },
+    "observability": {
+      "must": "Error tracking, analytics/telemetry events, performance monitoring (Core Web Vitals), logs, how to find a user's session when investigating."
+    }
+  },
+  "coverage": {
+    "kinds": [
+      "environment",
+      "env_var",
+      "config_key",
+      "screen",
+      "route",
+      "pipeline",
+      "local_dependency",
+      "test_suite",
+      "plaintext_secret"
+    ],
+    "home": {
+      "screen": [
+        "routes-screens"
+      ],
+      "environment": [
+        "configuration"
+      ],
+      "env_var": [
+        "configuration"
+      ],
+      "config_key": [
+        "configuration"
+      ],
+      "test_suite": [
+        "tests"
+      ],
+      "plaintext_secret": {
+        "all": [
+          "security",
+          "risks"
+        ]
+      }
+    }
+  }
+}

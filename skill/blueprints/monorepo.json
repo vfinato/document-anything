@@ -1,0 +1,135 @@
+{
+  "type": "monorepo",
+  "family": "code",
+  "label": {
+    "pt-BR": "Monorepo",
+    "en": "Monorepo"
+  },
+  "summary": "A repository holding several deployables or packages. This document is the map; each part gets its own document with its own type.",
+  "view_labels": {
+    "pt-BR": [
+      "Tudo",
+      "Visão geral",
+      "Técnico"
+    ],
+    "en": [
+      "All",
+      "Overview",
+      "Technical"
+    ]
+  },
+  "sections": {
+    "intro": [
+      "about"
+    ],
+    "overview": [
+      "summary",
+      "problem",
+      "repo-map",
+      "context",
+      "flow?",
+      "status"
+    ],
+    "detail": [
+      "dependency-graph",
+      "tooling",
+      "conventions",
+      "configuration",
+      "run-local",
+      "tests",
+      "deploy",
+      "dev-decisions",
+      "history?"
+    ],
+    "appendix": [
+      "risks",
+      "open-questions",
+      "faq-technical",
+      "glossary",
+      "references"
+    ]
+  },
+  "extra_sections": {
+    "repo-map": {
+      "title": {
+        "pt-BR": "Mapa do repositório",
+        "en": "Repository map"
+      },
+      "checks": [
+        "table",
+        "table-complete"
+      ],
+      "columns": {
+        "pt-BR": [
+          "Parte",
+          "Tipo",
+          "Pasta",
+          "Responsabilidade",
+          "Dono",
+          "Documento"
+        ],
+        "en": [
+          "Part",
+          "Type",
+          "Folder",
+          "Responsibility",
+          "Owner",
+          "Document"
+        ]
+      },
+      "must": "Every package/app/service in the repo: type (service, monolith, library, frontend, infra), folder, responsibility, owner, and the link to its own document (or 'pending' plus an open question when it has none yet)."
+    },
+    "dependency-graph": {
+      "title": {
+        "pt-BR": "Dependências entre as partes",
+        "en": "Dependencies between parts"
+      },
+      "checks": [
+        "mermaid"
+      ],
+      "must": "Diagram of which parts depend on which (package references, API calls, shared databases, shared libraries), plus the rules: what may depend on what."
+    },
+    "tooling": {
+      "title": {
+        "pt-BR": "Ferramentas do monorepo",
+        "en": "Monorepo tooling"
+      },
+      "must": "Workspace manager (npm/pnpm/yarn workspaces, Nx, Turborepo, Lerna, Bazel, .NET solution filters, Gradle multi-project), task orchestration, caching, how affected-only builds/tests work, shared configs."
+    },
+    "conventions": {
+      "title": {
+        "pt-BR": "Convenções",
+        "en": "Conventions"
+      },
+      "must": "Folder and naming conventions, how to add a new part, code style and linting, commit and branch conventions, versioning and release strategy (fixed vs independent)."
+    }
+  },
+  "overrides": {
+    "problem": {
+      "title": {
+        "pt-BR": "Por que um monorepo",
+        "en": "Why a monorepo"
+      },
+      "must": "What the repo groups together and why, and what deliberately lives elsewhere."
+    },
+    "configuration": {
+      "must": "Configuration shared by all parts (root env files, shared config packages, CI variables) and where each part's own configuration is documented."
+    }
+  },
+  "coverage": {
+    "kinds": [
+      "package",
+      "pipeline",
+      "local_dependency",
+      "plaintext_secret"
+    ],
+    "home": {
+      "package": [
+        "repo-map"
+      ],
+      "plaintext_secret": [
+        "risks"
+      ]
+    }
+  }
+}

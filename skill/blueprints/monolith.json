@@ -1,0 +1,225 @@
+{
+  "type": "monolith",
+  "family": "code",
+  "label": {
+    "pt-BR": "Monólito",
+    "en": "Monolith"
+  },
+  "summary": "One application holding many business areas: MVC, layered/clean/onion, vertical slice, hexagonal, modular monolith or a mix.",
+  "view_labels": {
+    "pt-BR": [
+      "Tudo",
+      "Negócio",
+      "Técnico"
+    ],
+    "en": [
+      "All",
+      "Business",
+      "Technical"
+    ]
+  },
+  "parts": {
+    "overview": {
+      "pt-BR": "Parte I — Visão de negócio",
+      "en": "Part I — Business view"
+    },
+    "detail": {
+      "pt-BR": "Parte II — Visão técnica",
+      "en": "Part II — Technical view"
+    }
+  },
+  "sections": {
+    "intro": [
+      "about"
+    ],
+    "overview": [
+      "summary",
+      "problem",
+      "capabilities",
+      "context",
+      "flow",
+      "journeys?",
+      "lifecycle?",
+      "business-rules",
+      "status",
+      "faq-business"
+    ],
+    "detail": [
+      "architecture-style",
+      "module-map",
+      "architecture",
+      "codebase",
+      "adding-a-feature",
+      "ui",
+      "api",
+      "data-model",
+      "jobs",
+      "messaging",
+      "integrations",
+      "code-walkthrough",
+      "configuration",
+      "security",
+      "observability",
+      "run-local",
+      "tests",
+      "deploy",
+      "dev-decisions",
+      "history?"
+    ],
+    "appendix": [
+      "production-gaps?",
+      "modernization?",
+      "risks",
+      "open-questions",
+      "faq-technical",
+      "troubleshooting",
+      "glossary",
+      "references"
+    ]
+  },
+  "extra_sections": {
+    "architecture-style": {
+      "title": {
+        "pt-BR": "Estilo arquitetural",
+        "en": "Architectural style"
+      },
+      "checks": [
+        "mermaid"
+      ],
+      "must": "The style(s) detected (MVC, layered/clean/onion, vertical slice, hexagonal, modular monolith, or a mix by region) with the evidence (folders, base classes, libraries), the dependency rule ('Application does not reference Infrastructure') and where it is broken today. Diagram of the layers or slices and the allowed dependency directions."
+    },
+    "module-map": {
+      "title": {
+        "pt-BR": "Mapa de módulos",
+        "en": "Module map"
+      },
+      "checks": [
+        "table"
+      ],
+      "columns": {
+        "pt-BR": [
+          "Módulo / área",
+          "Responsabilidade",
+          "Pastas / projetos",
+          "Depende de",
+          "Dono"
+        ],
+        "en": [
+          "Module / area",
+          "Responsibility",
+          "Folders / projects",
+          "Depends on",
+          "Owner"
+        ]
+      },
+      "must": "Every business module or area: what it owns, where its code lives, which modules it calls or shares tables with, who owns it. Coupling hot spots (shared tables, cross-module calls) are named explicitly."
+    },
+    "adding-a-feature": {
+      "title": {
+        "pt-BR": "Como adicionar uma funcionalidade",
+        "en": "Adding a feature"
+      },
+      "must": "Step by step in this project's own style, naming real files to copy from: for MVC controller + action + view + model + route; for vertical slice the Features/<Name> folder with endpoint, handler, validator and tests; for layered the projects touched in order. Include registration points (DI, routes, menus, permissions) and the tests expected."
+    },
+    "ui": {
+      "title": {
+        "pt-BR": "Telas e navegação",
+        "en": "Screens and navigation"
+      },
+      "na": true,
+      "checks": [
+        "table"
+      ],
+      "columns": {
+        "pt-BR": [
+          "Tela / rota",
+          "Para que serve",
+          "Controller / página",
+          "Permissão"
+        ],
+        "en": [
+          "Screen / route",
+          "Purpose",
+          "Controller / page",
+          "Permission"
+        ]
+      },
+      "must": "Server-rendered screens (MVC views, Razor Pages, templates): route, purpose, controller/page, permission, menu entry. Mark na when the application has no UI."
+    },
+    "modernization": {
+      "title": {
+        "pt-BR": "Caminho de modernização",
+        "en": "Modernization path"
+      },
+      "must": "Only when a migration is under way or decided (strangler, extraction of services, framework upgrade): target, what has moved, what remains, rules for new code."
+    }
+  },
+  "overrides": {
+    "jobs": {
+      "must": "Every scheduled or background process, in-process (Hangfire, Quartz, Celery beat, Sidekiq, cron libraries, hosted services) and external (OS cron, scheduler services): trigger translated for humans (time zone!), what it does, timeout, failure behaviour, how to run it by hand."
+    },
+    "configuration": {
+      "must": "(1) Overview table: kind of setting -> where it lives (Web.config/appsettings/.env/config files/database flags/parameter store) -> how it changes (deploy, restart, hot). (2) Loading and precedence, including config transforms per build/environment. (3) Per environment, every setting that differs, with who provides secrets (never the values). (4) Feature flags. (5) Infrastructure changes still needed."
+    },
+    "deploy": {
+      "must": "How it is built and published (pipeline, artefact, IIS/VM/container/PaaS), environments, maintenance windows, database migration steps, rollback, post-deploy checks."
+    }
+  },
+  "coverage": {
+    "kinds": [
+      "environment",
+      "iac_parameter",
+      "iac_resource",
+      "env_var",
+      "config_key",
+      "parameter_ref",
+      "route",
+      "screen",
+      "controller",
+      "schedule",
+      "pipeline",
+      "local_dependency",
+      "test_suite",
+      "plaintext_secret"
+    ],
+    "home": {
+      "environment": [
+        "configuration"
+      ],
+      "iac_parameter": [
+        "configuration"
+      ],
+      "route": [
+        "api",
+        "ui"
+      ],
+      "screen": [
+        "ui"
+      ],
+      "controller": [
+        "ui",
+        "api",
+        "module-map",
+        "code-walkthrough"
+      ],
+      "schedule": [
+        "jobs"
+      ],
+      "messaging_resource": [
+        "messaging"
+      ],
+      "config_key": [
+        "configuration"
+      ],
+      "test_suite": [
+        "tests"
+      ],
+      "plaintext_secret": {
+        "all": [
+          "security",
+          "risks"
+        ]
+      }
+    }
+  }
+}

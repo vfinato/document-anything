@@ -1,0 +1,1 @@
+{ "name": "platform", "private": true, "workspaces": ["apps/*", "packages/*"], "devDependencies": { "turbo": "2.0.0" } }

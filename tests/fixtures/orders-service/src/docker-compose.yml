@@ -1,0 +1,8 @@
+services:
+  postgres:
+    image: postgres:15.4
+    environment:
+      POSTGRES_USER: orders
+      POSTGRES_PASSWORD: local-orders-pass
+    ports:
+      - "5432:5432"

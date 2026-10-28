@@ -1,0 +1,38 @@
+{
+  "name": "document-anything",
+  "version": "1.0.0",
+  "description": "Agent skill that documents anything - services, monoliths, libraries, frontends, monorepos, infrastructure, processes and products - as a Markdown (for AI agents) + self-contained HTML (for humans) pair, with deterministic validators.",
+  "keywords": [
+    "agent-skill",
+    "claude-code",
+    "skills",
+    "documentation",
+    "docs",
+    "wiki",
+    "microservices",
+    "monolith",
+    "process-documentation",
+    "onboarding"
+  ],
+  "license": "MIT",
+  "bin": {
+    "document-anything": "bin/cli.js"
+  },
+  "files": [
+    "bin/",
+    "skill/**/*.md",
+    "skill/**/*.json",
+    "skill/**/*.py",
+    "skill/**/*.css",
+    "skill/**/*.js",
+    "README.md",
+    "README.pt-BR.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node bin/cli.js doctor && python -m unittest discover -s tests"
+  },
+  "engines": {
+    "node": ">=16"
+  }
+}

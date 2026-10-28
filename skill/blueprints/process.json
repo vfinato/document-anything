@@ -1,0 +1,315 @@
+{
+  "type": "process",
+  "family": "subject",
+  "label": {
+    "pt-BR": "Processo",
+    "en": "Process"
+  },
+  "summary": "How people and systems get something done: an operational, business or engineering process (onboarding, month-end close, incident response, release, approval flow...).",
+  "view_labels": {
+    "pt-BR": [
+      "Tudo",
+      "Visão geral",
+      "Passo a passo"
+    ],
+    "en": [
+      "All",
+      "Overview",
+      "Step by step"
+    ]
+  },
+  "parts": {
+    "overview": {
+      "pt-BR": "Parte I — Visão geral",
+      "en": "Part I — Overview"
+    },
+    "detail": {
+      "pt-BR": "Parte II — Passo a passo",
+      "en": "Part II — Step by step"
+    }
+  },
+  "sources_required": true,
+  "sections": {
+    "intro": [
+      "about"
+    ],
+    "overview": [
+      "summary",
+      "purpose",
+      "scope",
+      "roles",
+      "flow",
+      "status",
+      "faq-business"
+    ],
+    "detail": [
+      "steps",
+      "raci",
+      "systems-tools",
+      "business-rules",
+      "exceptions",
+      "sla-metrics",
+      "controls",
+      "artifacts",
+      "history?"
+    ],
+    "appendix": [
+      "risks",
+      "open-questions",
+      "glossary",
+      "references"
+    ]
+  },
+  "extra_sections": {
+    "purpose": {
+      "title": {
+        "pt-BR": "Objetivo e gatilho",
+        "en": "Purpose and trigger"
+      },
+      "must": "Why the process exists, what triggers it (event, date, request), what its outcome is and how one knows it finished well."
+    },
+    "scope": {
+      "title": {
+        "pt-BR": "Escopo",
+        "en": "Scope"
+      },
+      "must": "When it applies and when it does not (in scope / out of scope), frequency and volume, which areas, products or regions are covered.",
+      "skeleton": {
+        "pt-BR": "| Dentro do escopo | Fora do escopo |\n| --- | --- |\n| «…» | «…» |\n\n«Frequência, volume e áreas cobertas.»\n",
+        "en": "| In scope | Out of scope |\n| --- | --- |\n| «…» | «…» |\n\n«Frequency, volume and areas covered.»\n"
+      }
+    },
+    "roles": {
+      "title": {
+        "pt-BR": "Papéis",
+        "en": "Roles"
+      },
+      "checks": [
+        "table",
+        "table-complete"
+      ],
+      "columns": {
+        "pt-BR": [
+          "Papel",
+          "Responsabilidade",
+          "Quem exerce hoje"
+        ],
+        "en": [
+          "Role",
+          "Responsibility",
+          "Who holds it today"
+        ]
+      },
+      "must": "Every role that acts in the process, its responsibility and who holds it today (team or person as given by the sources)."
+    },
+    "steps": {
+      "title": {
+        "pt-BR": "Etapas",
+        "en": "Steps"
+      },
+      "checks": [
+        "table",
+        "table-complete"
+      ],
+      "columns": {
+        "pt-BR": [
+          "#",
+          "Etapa",
+          "Responsável",
+          "Entrada",
+          "Saída",
+          "Sistema / ferramenta",
+          "Prazo"
+        ],
+        "en": [
+          "#",
+          "Step",
+          "Owner",
+          "Input",
+          "Output",
+          "System / tool",
+          "Deadline"
+        ]
+      },
+      "must": "Every step in order: owner (a role from Roles, same name), input, output, system/tool, deadline/SLA. '—' only when the sources say there is none; when nobody knows, write 'Em aberto (ver Perguntas em aberto)' / 'Open (see Open questions)' and add the question. Conditional paths (e.g. approval tiers by value) are one row per branch with the condition in the step name, or a decision step plus rows; say when the order (sequential or parallel) is unknown. One collapsible block per complex step with detailed instructions."
+    },
+    "raci": {
+      "title": {
+        "pt-BR": "Matriz RACI",
+        "en": "RACI matrix"
+      },
+      "checks": [
+        "table",
+        "table-complete",
+        "raci"
+      ],
+      "must": "Rows = the steps from Steps (same names or numbers), columns = the roles from Roles (same names). Cells: R, A, C, I or combinations like R/A; '—' means the sources state no participation. Exactly one A per step: when the sources name only who performs a step, mark the performer R/A and add an open question about accountability.",
+      "skeleton": {
+        "pt-BR": "| Etapa | «Papel 1» | «Papel 2» |\n| --- | --- | --- |\n| «1. Etapa» | «R/A» | «I» |\n",
+        "en": "| Step | «Role 1» | «Role 2» |\n| --- | --- | --- |\n| «1. Step» | «R/A» | «I» |\n"
+      }
+    },
+    "systems-tools": {
+      "title": {
+        "pt-BR": "Sistemas e ferramentas",
+        "en": "Systems and tools"
+      },
+      "na": true,
+      "checks": [
+        "table"
+      ],
+      "columns": {
+        "pt-BR": [
+          "Sistema / ferramenta",
+          "Usado em",
+          "Para quê",
+          "Acesso"
+        ],
+        "en": [
+          "System / tool",
+          "Used in",
+          "What for",
+          "Access"
+        ]
+      },
+      "must": "Every system, spreadsheet, form or tool used, in which steps, for what, and how access is obtained."
+    },
+    "exceptions": {
+      "title": {
+        "pt-BR": "Exceções e escalonamento",
+        "en": "Exceptions and escalation"
+      },
+      "must": "What can go wrong at each step, the alternative path, who decides, escalation chain and contacts (roles), what to do when the deadline is missed.",
+      "checks": [
+        "table"
+      ],
+      "columns": {
+        "pt-BR": [
+          "Etapa",
+          "O que pode dar errado",
+          "Caminho alternativo",
+          "Quem decide",
+          "Fonte"
+        ],
+        "en": [
+          "Step",
+          "What can go wrong",
+          "Alternative path",
+          "Who decides",
+          "Source"
+        ]
+      }
+    },
+    "sla-metrics": {
+      "title": {
+        "pt-BR": "Prazos e indicadores",
+        "en": "SLAs and metrics"
+      },
+      "na": true,
+      "checks": [
+        "table"
+      ],
+      "columns": {
+        "pt-BR": [
+          "Indicador",
+          "Definição",
+          "Meta",
+          "Fonte do dado",
+          "Quem acompanha"
+        ],
+        "en": [
+          "Metric",
+          "Definition",
+          "Target",
+          "Data source",
+          "Who tracks it"
+        ]
+      },
+      "must": "SLAs and KPIs with exact definitions, targets, data source and who tracks them."
+    },
+    "controls": {
+      "title": {
+        "pt-BR": "Controles e conformidade",
+        "en": "Controls and compliance"
+      },
+      "na": true,
+      "must": "Approvals, segregation of duties, evidence kept (what, where, for how long), audits, regulations or policies the process satisfies.",
+      "skeleton": {
+        "pt-BR": "| Controle | Evidência | Onde fica | Por quanto tempo | Fonte |\n| --- | --- | --- | --- | --- |\n| «…» | «…» | «…» | «…» | «…» |\n",
+        "en": "| Control | Evidence | Where it is kept | Retention | Source |\n| --- | --- | --- | --- | --- |\n| «…» | «…» | «…» | «…» | «…» |\n"
+      }
+    },
+    "artifacts": {
+      "title": {
+        "pt-BR": "Documentos e modelos",
+        "en": "Documents and templates"
+      },
+      "na": true,
+      "must": "Documents, forms, templates and records produced or consumed, with where they live.",
+      "skeleton": {
+        "pt-BR": "| Documento / modelo | Produzido ou usado em | Onde fica |\n| --- | --- | --- |\n| «…» | «…» | «…» |\n",
+        "en": "| Document / template | Produced or used in | Where it lives |\n| --- | --- | --- |\n| «…» | «…» | «…» |\n"
+      }
+    }
+  },
+  "overrides": {
+    "summary": {
+      "must": "Card grid (4-10 cards): goal, trigger, frequency, owner, average duration, main system, current status. Close with an 'In one sentence:' line."
+    },
+    "flow": {
+      "must": "Mermaid flowchart (or sequence diagram with roles as participants) of the main path and the main decision points, then numbered prose walking through it."
+    },
+    "status": {
+      "must": "The first sentence carries the date. Maturity (ad hoc, documented, measured, automated), last review, known pain points, planned changes."
+    },
+    "business-rules": {
+      "title": {
+        "pt-BR": "Regras e políticas",
+        "en": "Rules and policies"
+      },
+      "must": "Every rule the process must respect (limits, approvals by value, deadlines, eligibility), with its source (policy, regulation, decision).",
+      "columns": {
+        "pt-BR": [
+          "Regra",
+          "Detalhe",
+          "Fonte"
+        ],
+        "en": [
+          "Rule",
+          "Detail",
+          "Source"
+        ]
+      },
+      "checks": [
+        "table",
+        "table-complete"
+      ]
+    },
+    "risks": {
+      "must": "Risk, impact, severity, mitigation. Includes single points of failure (one person holds a role), manual steps prone to error, missing controls."
+    },
+    "references": {
+      "must": "Every source this document was built from: the documents, links, transcripts and people interviewed (with date) listed in the front matter `sources`, plus how the document is maintained."
+    }
+  },
+  "crossref": [
+    {
+      "from": "roles",
+      "column": 0,
+      "to": "raci",
+      "to_header": true,
+      "message": "every role in Roles must be a column of the RACI matrix"
+    },
+    {
+      "from": "steps",
+      "column": 2,
+      "to": "roles",
+      "to_column": 0,
+      "message": "every step owner must be a role listed in Roles (same name)"
+    }
+  ],
+  "coverage": {
+    "kinds": [],
+    "home": {}
+  }
+}

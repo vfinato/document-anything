@@ -1,0 +1,59 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: orders-service
+
+Parameters:
+  Stage:
+    Type: String
+  SSMPrefix:
+    Description: SSM Prefix
+    Type: String
+    Default: /orders-service/local
+
+Globals:
+  Function:
+    Runtime: dotnet8
+    Timeout: 30
+    Environment:
+      Variables:
+        Database__Server: !Sub orders-${Stage}.cluster.local
+        SSM__Prefix: !Ref SSMPrefix
+        Payments__BaseUrl: https://payments.example.com
+
+Resources:
+  OrderCreatedQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub orders-created-${Stage}
+
+  ApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: Orders.Api
+      CodeUri: ./Orders.Api
+      Events:
+        Proxy:
+          Type: HttpApi
+          Properties:
+            Path: /{proxy+}
+            Method: ANY
+        Health:
+          Type: HttpApi
+          Properties:
+            Path: /health
+            Method: GET
+
+  ExpireOrdersFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: Orders.Consumer::Orders.Consumer.ExpireOrders::Handler
+      CodeUri: ./Orders.Consumer
+      Timeout: 120
+      Environment:
+        Variables:
+          Expiration__Hours: '48'
+      Events:
+        ExpireOrdersSchedule:
+          Type: Schedule
+          Properties:
+            Schedule: rate(1 hour)

@@ -1,0 +1,17 @@
+version: 0.1
+default:
+  deploy:
+    parameters:
+      region: us-east-1
+dev:
+  deploy:
+    parameters:
+      parameter_overrides:
+        - Stage=dev
+        - SSMPrefix=/orders-service/dev
+prod:
+  deploy:
+    parameters:
+      parameter_overrides:
+        - Stage=prod
+        - SSMPrefix=/orders-service/prod

@@ -1,0 +1,220 @@
+{
+  "type": "product",
+  "family": "subject",
+  "label": {
+    "pt-BR": "Produto",
+    "en": "Product"
+  },
+  "summary": "A product or program as its users and the business see it: who it serves, what it does, how success is measured, where it is going.",
+  "view_labels": {
+    "pt-BR": [
+      "Tudo",
+      "Visão geral",
+      "Detalhe"
+    ],
+    "en": [
+      "All",
+      "Overview",
+      "Detail"
+    ]
+  },
+  "sources_required": true,
+  "sections": {
+    "intro": [
+      "about"
+    ],
+    "overview": [
+      "summary",
+      "problem",
+      "users",
+      "capabilities",
+      "journeys",
+      "context",
+      "status",
+      "faq-business"
+    ],
+    "detail": [
+      "features",
+      "business-rules",
+      "metrics",
+      "roadmap",
+      "dependencies",
+      "operations",
+      "pricing?",
+      "history?"
+    ],
+    "appendix": [
+      "risks",
+      "open-questions",
+      "glossary",
+      "references"
+    ]
+  },
+  "extra_sections": {
+    "users": {
+      "title": {
+        "pt-BR": "Quem usa",
+        "en": "Users"
+      },
+      "checks": [
+        "table",
+        "table-complete"
+      ],
+      "columns": {
+        "pt-BR": [
+          "Público",
+          "Necessidade",
+          "Como usa o produto",
+          "Volume"
+        ],
+        "en": [
+          "Audience",
+          "Need",
+          "How they use it",
+          "Volume"
+        ]
+      },
+      "must": "Every audience/persona: need, how they use the product, size of the audience when known."
+    },
+    "features": {
+      "title": {
+        "pt-BR": "Funcionalidades",
+        "en": "Features"
+      },
+      "checks": [
+        "table",
+        "table-complete"
+      ],
+      "columns": {
+        "pt-BR": [
+          "Funcionalidade",
+          "Público",
+          "Problema que resolve",
+          "Situação",
+          "Indicador"
+        ],
+        "en": [
+          "Feature",
+          "Audience",
+          "Problem it solves",
+          "Status",
+          "Metric"
+        ]
+      },
+      "must": "Every feature: audience (an audience from Users, same name), problem it solves, status (live, beta, planned, retired), the metric that shows it works. Systems or repos that implement it in a collapsible block when known."
+    },
+    "metrics": {
+      "title": {
+        "pt-BR": "Indicadores",
+        "en": "Metrics"
+      },
+      "checks": [
+        "table"
+      ],
+      "columns": {
+        "pt-BR": [
+          "Indicador",
+          "Definição",
+          "Meta",
+          "Fonte do dado",
+          "Situação atual"
+        ],
+        "en": [
+          "Metric",
+          "Definition",
+          "Target",
+          "Data source",
+          "Current value"
+        ]
+      },
+      "must": "North-star and supporting metrics with exact definitions, targets, data source and the latest value with its date."
+    },
+    "roadmap": {
+      "title": {
+        "pt-BR": "Roadmap",
+        "en": "Roadmap"
+      },
+      "na": true,
+      "checks": [
+        "table"
+      ],
+      "columns": {
+        "pt-BR": [
+          "Item",
+          "Objetivo",
+          "Prazo",
+          "Situação"
+        ],
+        "en": [
+          "Item",
+          "Goal",
+          "Timeframe",
+          "Status"
+        ]
+      },
+      "must": "Planned items with goal, timeframe and status, as given by the sources (never invented dates)."
+    },
+    "dependencies": {
+      "title": {
+        "pt-BR": "Dependências",
+        "en": "Dependencies"
+      },
+      "checks": [
+        "table"
+      ],
+      "columns": {
+        "pt-BR": [
+          "Dependência",
+          "Tipo",
+          "Para quê",
+          "Dono"
+        ],
+        "en": [
+          "Dependency",
+          "Kind",
+          "What for",
+          "Owner"
+        ]
+      },
+      "must": "Systems, teams, vendors and contracts the product depends on, with owners."
+    },
+    "operations": {
+      "title": {
+        "pt-BR": "Operação e suporte",
+        "en": "Operations and support"
+      },
+      "must": "How users get help, support tiers and SLAs, who operates the product day to day, communication channels, incident process."
+    },
+    "pricing": {
+      "title": {
+        "pt-BR": "Planos e preços",
+        "en": "Plans and pricing"
+      },
+      "must": "Plans, pricing or cost model and how they are changed."
+    }
+  },
+  "overrides": {
+    "problem": {
+      "title": {
+        "pt-BR": "Problema e proposta de valor",
+        "en": "Problem and value proposition"
+      }
+    },
+    "references": {
+      "must": "Every source this document was built from: the documents, links, transcripts, dashboards and people interviewed (with date) listed in the front matter `sources`, plus how the document is maintained."
+    }
+  },
+  "crossref": [
+    {
+      "from": "features",
+      "column": 1,
+      "to": "users",
+      "to_column": 0,
+      "message": "every feature audience must be an audience listed in Users (same name)"
+    }
+  ],
+  "coverage": {
+    "kinds": [],
+    "home": {}
+  }
+}

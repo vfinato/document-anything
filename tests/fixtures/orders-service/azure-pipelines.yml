@@ -1,0 +1,8 @@
+trigger:
+  - main
+stages:
+  - stage: Build
+  - stage: Deploy
+    jobs:
+      - deployment: DeployDev
+        environment: dev

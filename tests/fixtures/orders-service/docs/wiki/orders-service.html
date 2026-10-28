@@ -1,0 +1,738 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="document-anything 1.0.0">
+<meta name="wiki-source" content="orders-service.md">
+<meta name="wiki-source-sha256" content="a4e635b5c5245c513609aa318ffb16df2328d055789776b1a0a6fa5ee5f7c61a">
+<title>Wiki — Serviço de Pedidos</title>
+<style>
+:root {
+  --bg: #f7f7f5;
+  --surface: #ffffff;
+  --surface-2: #f1f1ee;
+  --text: #1d1f23;
+  --muted: #5d636d;
+  --border: #deded9;
+  --accent: #1f5fbf;
+  --accent-soft: #e6eefb;
+  --mark: #fff0a8;
+  --code-bg: #f3f3f0;
+  --ok: #17803d; --ok-bg: #e2f5e8;
+  --warn: #a15c00; --warn-bg: #fff1dc;
+  --bad: #b3261e; --bad-bg: #fde7e5;
+  --imp: #6b3fb3; --imp-bg: #efe8fb;
+  --t0: #1f5fbf; --t0-bg: #e6eefb;
+  --t1: #17803d; --t1-bg: #e2f5e8;
+  --t2: #9a5b00; --t2-bg: #fff1dc;
+  --t3: #6b3fb3; --t3-bg: #efe8fb;
+  --t4: #0f766e; --t4-bg: #dff5f2;
+  --t5: #b3261e; --t5-bg: #fde7e5;
+  --t6: #a3306f; --t6-bg: #fbe6f1;
+  --t7: #44505f; --t7-bg: #e9edf2;
+  --shadow: 0 1px 2px rgba(0,0,0,.05), 0 2px 8px rgba(0,0,0,.04);
+  --radius: 10px;
+  --sidebar: 300px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #15171a; --surface: #1c1f23; --surface-2: #23272c; --text: #e7e8ea; --muted: #a2a8b1;
+    --border: #33383f; --accent: #7fb0ff; --accent-soft: #1f2d44; --mark: #6b5a00; --code-bg: #23272c;
+    --ok: #6fd699; --ok-bg: #173222; --warn: #ffb95c; --warn-bg: #3a2a12; --bad: #ff8a80; --bad-bg: #3d1d1b;
+    --imp: #c4a6ff; --imp-bg: #2c2340;
+    --t0: #7fb0ff; --t0-bg: #1f2d44; --t1: #6fd699; --t1-bg: #173222; --t2: #ffb95c; --t2-bg: #3a2a12;
+    --t3: #c4a6ff; --t3-bg: #2c2340; --t4: #5fd4c6; --t4-bg: #14302d; --t5: #ff8a80; --t5-bg: #3d1d1b;
+    --t6: #f59ac9; --t6-bg: #3a1d2d; --t7: #b3bfcc; --t7-bg: #262c33;
+    --shadow: none;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #15171a; --surface: #1c1f23; --surface-2: #23272c; --text: #e7e8ea; --muted: #a2a8b1;
+  --border: #33383f; --accent: #7fb0ff; --accent-soft: #1f2d44; --mark: #6b5a00; --code-bg: #23272c;
+  --ok: #6fd699; --ok-bg: #173222; --warn: #ffb95c; --warn-bg: #3a2a12; --bad: #ff8a80; --bad-bg: #3d1d1b;
+  --imp: #c4a6ff; --imp-bg: #2c2340;
+  --t0: #7fb0ff; --t0-bg: #1f2d44; --t1: #6fd699; --t1-bg: #173222; --t2: #ffb95c; --t2-bg: #3a2a12;
+  --t3: #c4a6ff; --t3-bg: #2c2340; --t4: #5fd4c6; --t4-bg: #14302d; --t5: #ff8a80; --t5-bg: #3d1d1b;
+  --t6: #f59ac9; --t6-bg: #3a1d2d; --t7: #b3bfcc; --t7-bg: #262c33;
+  --shadow: none;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 16px; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font: 15.5px/1.62 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ---------- layout ---------- */
+.layout { display: grid; grid-template-columns: var(--sidebar) minmax(0, 1fr); min-height: 100vh; }
+aside.sidebar {
+  position: sticky; top: 0; height: 100vh; overflow-y: auto; border-right: 1px solid var(--border);
+  background: var(--surface); padding: 18px 16px 40px;
+}
+.brand { font-weight: 700; font-size: 15px; letter-spacing: .2px; margin-bottom: 2px; }
+.brand-sub { color: var(--muted); font-size: 12.5px; margin-bottom: 6px; }
+.brand-meta { color: var(--muted); font-size: 11.5px; margin-bottom: 14px; }
+.controls { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+.search { position: relative; }
+.search input {
+  width: 100%; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border);
+  background: var(--bg); color: var(--text); font-size: 14px;
+}
+.search input:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+.search-info { font-size: 12px; color: var(--muted); min-height: 16px; margin-top: 4px; }
+.seg { display: flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.seg button {
+  flex: 1 1 auto; border: 0; background: transparent; color: var(--muted); padding: 6px 6px; font-size: 12px; white-space: nowrap;
+  cursor: pointer; border-right: 1px solid var(--border);
+}
+.seg button:last-child { border-right: 0; }
+.seg button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.row-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+.btn {
+  border: 1px solid var(--border); background: var(--surface); color: var(--text); border-radius: 7px;
+  padding: 5px 9px; font-size: 12.5px; cursor: pointer;
+}
+.btn:hover { border-color: var(--accent); color: var(--accent); }
+nav.toc ul { list-style: none; margin: 0; padding: 0; }
+nav.toc .toc-l1 > li { margin: 10px 0 2px; }
+nav.toc .toc-l1 > li > a { font-weight: 650; color: var(--text); font-size: 13.5px; }
+nav.toc .toc-l2 { margin: 3px 0 0 2px; border-left: 1px solid var(--border); }
+nav.toc .toc-l2 a { display: block; padding: 2px 0 2px 10px; color: var(--muted); font-size: 13px; line-height: 1.4; }
+nav.toc a.active { color: var(--accent) !important; font-weight: 600; }
+nav.toc .toc-l2 a.active { border-left: 2px solid var(--accent); margin-left: -1px; }
+nav.toc li.hidden { display: none; }
+
+main { padding: 28px 44px 80px; max-width: 1080px; width: 100%; }
+.topbar { display: none; }
+
+/* ---------- tipografia ---------- */
+h1, h2, h3, h4 { line-height: 1.28; letter-spacing: -.01em; }
+h1 { font-size: 30px; margin: 46px 0 8px; padding-bottom: 10px; border-bottom: 2px solid var(--border); }
+.part:first-child h1:first-child { margin-top: 4px; }
+h2 { font-size: 23px; margin: 38px 0 10px; }
+h3 { font-size: 18px; margin: 26px 0 8px; }
+h4 { font-size: 15.5px; margin: 20px 0 6px; color: var(--muted); }
+p { margin: 8px 0 12px; }
+ul, ol { padding-left: 22px; }
+li { margin: 3px 0; }
+li.task { list-style: none; margin-left: -20px; }
+li.task input { margin-right: 6px; }
+hr { border: 0; border-top: 1px solid var(--border); margin: 28px 0; }
+img { max-width: 100%; }
+blockquote {
+  margin: 14px 0; padding: 10px 14px; border-left: 4px solid var(--accent); background: var(--accent-soft);
+  border-radius: 0 8px 8px 0;
+}
+blockquote p { margin: 4px 0; }
+blockquote.callout .callout-title { font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: .05em; }
+blockquote.callout.tip { border-color: var(--ok); background: var(--ok-bg); }
+blockquote.callout.tip .callout-title { color: var(--ok); }
+blockquote.callout.important { border-color: var(--imp); background: var(--imp-bg); }
+blockquote.callout.important .callout-title { color: var(--imp); }
+blockquote.callout.warning { border-color: var(--warn); background: var(--warn-bg); }
+blockquote.callout.warning .callout-title { color: var(--warn); }
+blockquote.callout.caution { border-color: var(--bad); background: var(--bad-bg); }
+blockquote.callout.caution .callout-title { color: var(--bad); }
+blockquote.callout.note .callout-title { color: var(--accent); }
+code {
+  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace; font-size: .88em;
+  background: var(--code-bg); padding: 1px 5px; border-radius: 5px; word-break: break-word;
+}
+pre { background: var(--code-bg); padding: 12px 14px; border-radius: 8px; overflow-x: auto; border: 1px solid var(--border); position: relative; }
+pre code { background: none; padding: 0; font-size: 13px; word-break: normal; }
+pre .copy {
+  position: absolute; top: 6px; right: 6px; font-size: 11.5px; padding: 2px 8px; opacity: 0; transition: opacity .15s;
+}
+pre:hover .copy, pre .copy:focus { opacity: 1; }
+section.sec { scroll-margin-top: 12px; }
+
+/* ---------- tabelas ---------- */
+.table-wrap { overflow-x: auto; margin: 12px 0 18px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--border); }
+th { background: var(--surface-2); font-weight: 650; position: sticky; top: 0; white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+tbody tr:hover td { background: var(--surface-2); }
+
+/* ---------- expansíveis ---------- */
+details {
+  border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface);
+  margin: 10px 0; box-shadow: var(--shadow);
+}
+details > summary {
+  cursor: pointer; padding: 10px 14px; font-weight: 600; list-style: none; display: flex; align-items: center; gap: 8px;
+}
+details > summary::-webkit-details-marker { display: none; }
+details > summary::before {
+  content: ""; width: 7px; height: 7px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted);
+  transform: rotate(-45deg); transition: transform .15s; flex: none; margin-right: 2px;
+}
+details[open] > summary::before { transform: rotate(45deg); }
+details[open] > summary { border-bottom: 1px solid var(--border); }
+details > :not(summary) { margin-left: 16px; margin-right: 16px; }
+details > :last-child { margin-bottom: 14px; }
+
+/* ---------- cartões ---------- */
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px; margin: 14px 0 20px; }
+.card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 14px 12px;
+  box-shadow: var(--shadow);
+}
+.card-title { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 650; }
+.card-value { font-size: 19px; font-weight: 700; margin: 4px 0 4px; line-height: 1.25; }
+.card-desc { font-size: 13px; color: var(--muted); line-height: 1.45; }
+
+/* ---------- etiquetas ---------- */
+.tag {
+  display: inline-block; font-size: 11.5px; font-weight: 700; padding: 0 7px; border-radius: 999px; line-height: 19px;
+  vertical-align: 1px; letter-spacing: .02em;
+}
+.tag.t0 { color: var(--t0); background: var(--t0-bg); }
+.tag.t1 { color: var(--t1); background: var(--t1-bg); }
+.tag.t2 { color: var(--t2); background: var(--t2-bg); }
+.tag.t3 { color: var(--t3); background: var(--t3-bg); }
+.tag.t4 { color: var(--t4); background: var(--t4-bg); }
+.tag.t5 { color: var(--t5); background: var(--t5-bg); }
+.tag.t6 { color: var(--t6); background: var(--t6-bg); }
+.tag.t7 { color: var(--t7); background: var(--t7-bg); }
+
+/* ---------- diagramas ---------- */
+.diagram { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; margin: 14px 0 20px; overflow-x: auto; }
+.diagram pre.mermaid { background: none; border: 0; padding: 0; margin: 0; text-align: center; white-space: pre; }
+.diagram pre.mermaid:not([data-processed]) { text-align: left; font-size: 12.5px; color: var(--muted); }
+
+mark { background: var(--mark); color: inherit; padding: 0 1px; border-radius: 2px; }
+.hidden-by-filter, .search-empty { display: none !important; }
+.to-top {
+  position: fixed; right: 18px; bottom: 18px; width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border);
+  background: var(--surface); color: var(--text); cursor: pointer; box-shadow: var(--shadow); font-size: 18px; display: none;
+}
+.to-top.show { display: block; }
+footer.doc-footer { margin-top: 56px; padding-top: 14px; border-top: 1px solid var(--border); color: var(--muted); font-size: 12.5px; }
+
+/* ---------- responsivo ---------- */
+@media (max-width: 960px) {
+  .layout { grid-template-columns: 1fr; }
+  aside.sidebar { position: fixed; inset: 0 auto 0 0; width: min(88vw, 340px); z-index: 20; transform: translateX(-102%); transition: transform .2s; box-shadow: 0 0 30px rgba(0,0,0,.25); }
+  body.nav-open aside.sidebar { transform: none; }
+  .topbar {
+    display: flex; position: sticky; top: 0; z-index: 10; align-items: center; gap: 10px; padding: 10px 16px;
+    background: var(--surface); border-bottom: 1px solid var(--border);
+  }
+  .topbar .title { font-weight: 650; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  main { padding: 18px 16px 70px; }
+  h1 { font-size: 25px; } h2 { font-size: 20px; }
+}
+@media print {
+  aside.sidebar, .topbar, .to-top, pre .copy { display: none !important; }
+  .layout { display: block; }
+  main { max-width: none; padding: 0; }
+  details { box-shadow: none; }
+  .hidden-by-filter, .search-empty { display: block !important; }
+}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <button class="btn" id="navToggle" aria-label="Sumário">☰ Sumário</button>
+  <span class="title">Wiki — Serviço de Pedidos</span>
+</div>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">Wiki — Serviço de Pedidos</div>
+    <div class="brand-sub">Recebe pedidos da loja, expira os não pagos e expõe o status para o atendimento</div>
+    <div class="brand-meta">Atualizado em 23/10/2026 · commit <code>0a1b2c3</code></div>
+    <div class="controls">
+      <div class="search">
+        <input id="q" type="search" placeholder="Buscar no documento…" autocomplete="off" aria-label="Buscar no documento…">
+        <div class="search-info" id="searchInfo"></div>
+      </div>
+      <div class="seg" role="group" aria-label="Filtrar visão">
+        <button data-view="all" aria-pressed="true">Tudo</button>
+        <button data-view="overview" aria-pressed="false">Negócio</button>
+        <button data-view="detail" aria-pressed="false">Técnico</button>
+      </div>
+      <div class="row-btns">
+        <button class="btn" id="expandAll">Expandir tudo</button>
+        <button class="btn" id="collapseAll">Recolher tudo</button>
+        <button class="btn" id="themeBtn" aria-label="Alternar tema">◐ Tema</button>
+      </div>
+    </div>
+    <nav class="toc" id="toc"><ul class="toc-l1"><li class="l1"><a href="#wiki-serviço-de-pedidos">Wiki — Serviço de Pedidos</a><ul class="toc-l2"><li class="l2"><a href="#como-ler-este-documento">Como ler este documento</a></li></ul></li><li class="l1"><a href="#parte-i-visão-de-negócio">Parte I — Visão de negócio</a><ul class="toc-l2"><li class="l2"><a href="#resumo-em-uma-página">Resumo em uma página</a></li><li class="l2"><a href="#o-problema-de-negócio">O problema de negócio</a></li><li class="l2"><a href="#o-que-o-serviço-faz">O que o serviço faz</a></li><li class="l2"><a href="#sistemas-envolvidos">Sistemas envolvidos</a></li><li class="l2"><a href="#fluxo-de-ponta-a-ponta">Fluxo de ponta a ponta</a></li><li class="l2"><a href="#regras-e-decisões-de-negócio">Regras e decisões de negócio</a></li><li class="l2"><a href="#onde-estamos">Onde estamos</a></li><li class="l2"><a href="#perguntas-frequentes-negócio">Perguntas frequentes (negócio)</a></li></ul></li><li class="l1"><a href="#parte-ii-visão-técnica">Parte II — Visão técnica</a><ul class="toc-l2"><li class="l2"><a href="#arquitetura">Arquitetura</a></li><li class="l2"><a href="#organização-do-código">Organização do código</a></li><li class="l2"><a href="#modelo-de-dados">Modelo de dados</a></li><li class="l2"><a href="#contratos-da-api">Contratos da API</a></li><li class="l2"><a href="#eventos-e-mensageria">Eventos e mensageria</a></li><li class="l2"><a href="#processos-automáticos">Processos automáticos</a></li><li class="l2"><a href="#integrações-externas">Integrações externas</a></li><li class="l2"><a href="#explicação-do-código">Explicação do código</a></li><li class="l2"><a href="#configuração-por-ambiente">Configuração por ambiente</a></li><li class="l2"><a href="#segurança-e-permissões">Segurança e permissões</a></li><li class="l2"><a href="#observabilidade">Observabilidade</a></li><li class="l2"><a href="#como-rodar-localmente">Como rodar localmente</a></li><li class="l2"><a href="#testes">Testes</a></li><li class="l2"><a href="#deploy-rollout-e-rollback">Deploy, rollout e rollback</a></li><li class="l2"><a href="#decisões-técnicas">Decisões técnicas</a></li></ul></li><li class="l1"><a href="#parte-iii-apoio">Parte III — Apoio</a><ul class="toc-l2"><li class="l2"><a href="#riscos-e-dívidas">Riscos e dívidas</a></li><li class="l2"><a href="#perguntas-em-aberto">Perguntas em aberto</a></li><li class="l2"><a href="#perguntas-e-respostas-técnicas">Perguntas e respostas técnicas</a></li><li class="l2"><a href="#solução-de-problemas">Solução de problemas</a></li><li class="l2"><a href="#glossário">Glossário</a></li><li class="l2"><a href="#referências">Referências</a></li></ul></li></ul></nav>
+  </aside>
+  <main id="content">
+<div class="part" data-part="intro">
+<h1 id="wiki-serviço-de-pedidos">Wiki — Serviço de Pedidos</h1>
+<blockquote>
+<p><strong>O que é este documento.</strong> A fonte de verdade do serviço de pedidos: o que ele faz, por que existe e como operá-lo, do negócio à configuração, conforme o código de 23/10/2026.</p>
+<p><strong>Para quem é.</strong> Qualquer pessoa que precise entender, operar, testar ou evoluir o serviço sem depender de quem o construiu.</p>
+</blockquote>
+<section class="sec" data-section="about"><h2 id="como-ler-este-documento">Como ler este documento</h2>
+<ul>
+<li><strong>Parte I — Visão de negócio.</strong> O problema, o que o serviço faz, quem participa, o fluxo, as regras, o estado atual e as perguntas mais comuns.</li>
+<li><strong>Parte II — Visão técnica.</strong> Arquitetura, código, dados, contratos, processos automáticos, configuração por ambiente, segurança, observabilidade, como rodar, testar e publicar.</li>
+<li><strong>Parte III — Apoio.</strong> Riscos, perguntas em aberto, solução de problemas, glossário e referências.</li>
+</ul>
+<div class="table-wrap"><table>
+<thead><tr><th>Etiqueta</th><th>Aplicação</th><th>Repositório</th></tr></thead>
+<tbody>
+<tr><td><span class="tag t0">Service</span></td><td>Serviço de pedidos</td><td><code>orders-service</code></td></tr>
+<tr><td><span class="tag t1">Loja</span></td><td>Loja virtual</td><td><code>web-store</code></td></tr>
+</tbody>
+</table></div>
+<p><strong>Convenções.</strong> Datas em dia/mês/ano, horários em Brasília salvo quando indicado UTC. Nenhum segredo é reproduzido; o documento diz onde cada valor está e quem o fornece. Termos no <a href="#glossário">Glossário</a>.</p>
+</section>
+</div>
+<div class="part" data-part="overview">
+<h1 id="parte-i-visão-de-negócio">Parte I — Visão de negócio</h1>
+<section class="sec" data-section="summary"><h2 id="resumo-em-uma-página">Resumo em uma página</h2>
+<div class="cards"><div class="card"><div class="card-title">Objetivo</div><div class="card-value">Pedido com prazo de pagamento</div><div class="card-desc">Todo pedido nasce pendente e expira se não for pago em 48 horas.</div></div><div class="card"><div class="card-title">Quem usa</div><div class="card-value">Loja e atendimento</div><div class="card-desc">A loja cria pedidos; o atendimento consulta o status.</div></div><div class="card"><div class="card-title">Expiração</div><div class="card-value">De hora em hora</div><div class="card-desc">Um processo automático cancela pedidos vencidos.</div></div><div class="card"><div class="card-title">Em produção</div><div class="card-value">Sim, desde 01/09/2026</div><div class="card-desc">Ambientes DEV e PROD.</div></div><div class="card"><div class="card-title">Dependência crítica</div><div class="card-value">Serviço de pagamentos</div><div class="card-desc">Confirma o pagamento de cada pedido.</div></div></div>
+<p><strong>Em uma frase:</strong> a loja <span class="tag t1">Loja</span> cria o pedido no serviço <span class="tag t0">Service</span>, que o guarda como pendente, avisa quem precisa por fila e cancela automaticamente os que não forem pagos em 48 horas.</p>
+</section>
+<section class="sec" data-section="problem"><h2 id="o-problema-de-negócio">O problema de negócio</h2>
+<p>Antes do serviço, a loja reservava estoque para pedidos que nunca eram pagos, e o atendimento não tinha onde consultar a situação de um pedido.</p>
+<ol>
+<li>Pedidos não pagos passam a expirar sozinhos e liberam o estoque.</li>
+<li>O atendimento consulta o status de qualquer pedido por identificador.</li>
+<li>Outros sistemas são avisados de cada pedido novo por fila, sem acoplamento.</li>
+</ol>
+</section>
+<section class="sec" data-section="capabilities"><h2 id="o-que-o-serviço-faz">O que o serviço faz</h2>
+<ul>
+<li><strong>Criar pedidos</strong> — usado pela loja <span class="tag t1">Loja</span> pela API.</li>
+<li><strong>Consultar um pedido</strong> — usado pelo atendimento pela API.</li>
+<li><strong>Expirar pedidos vencidos</strong> — processo automático de hora em hora.</li>
+</ul>
+<p><strong>O que o serviço não faz.</strong> Não cobra o cliente nem guarda dados de cartão: isso é do serviço de pagamentos.</p>
+</section>
+<section class="sec" data-section="context"><h2 id="sistemas-envolvidos">Sistemas envolvidos</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Sistema</th><th>Papel</th><th>Como se relaciona</th><th>Time responsável</th></tr></thead>
+<tbody>
+<tr><td>Loja virtual <span class="tag t1">Loja</span></td><td>Cria pedidos</td><td>Chama a API do serviço</td><td>Time Loja</td></tr>
+<tr><td>Serviço de pagamentos</td><td>Confirma pagamentos</td><td>O serviço chama a API dele</td><td>Time Pagamentos</td></tr>
+<tr><td>Atendimento</td><td>Consulta pedidos</td><td>Chama a API do serviço</td><td>Operação</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="sec" data-section="flow"><h2 id="fluxo-de-ponta-a-ponta">Fluxo de ponta a ponta</h2>
+<div class="diagram"><pre class="mermaid">flowchart TD
+    L["Cliente fecha a compra (Loja)"] --&gt; C["Cria o pedido pendente (Service)"]
+    C --&gt; Q["Publica na fila orders-created"]
+    C --&gt; P{"Pago em 48 horas?"}
+    P -- "Sim" --&gt; OK["Pedido pago"]
+    P -- "Não" --&gt; X["Expirado pelo processo horário"]</pre></div>
+<ol>
+<li>O cliente fecha a compra e a loja chama <code>POST /orders</code>.</li>
+<li>O serviço grava o pedido como pendente e publica o evento na fila <code>OrderCreatedQueue</code>.</li>
+<li>Se o pagamento não for confirmado em 48 horas, o processo horário expira o pedido.</li>
+</ol>
+</section>
+<section class="sec" data-section="business-rules"><h2 id="regras-e-decisões-de-negócio">Regras e decisões de negócio</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Regra</th><th>Detalhe</th><th>Motivo</th></tr></thead>
+<tbody>
+<tr><td>Prazo de pagamento</td><td>48 horas, configurável por <code>Expiration__Hours</code></td><td>Liberar estoque reservado</td></tr>
+<tr><td>Pedido expirado não volta</td><td>Um pedido expirado não pode ser pago</td><td>Evitar venda sem estoque</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="sec" data-section="status"><h2 id="onde-estamos">Onde estamos</h2>
+<p>Em 23/10/2026: em produção desde 01/09/2026, em DEV e PROD. Nenhuma entrega pendente; a próxima evolução é a consulta por cliente, ainda sem data.</p>
+</section>
+<section class="sec" data-section="faq-business"><h2 id="perguntas-frequentes-negócio">Perguntas frequentes (negócio)</h2>
+<details>
+<summary>Um pedido expirado pode ser reativado?</summary>
+<p>Não. O cliente precisa fazer um novo pedido.</p>
+</details>
+<details>
+<summary>Quanto tempo o cliente tem para pagar?</summary>
+<p>48 horas a partir da criação do pedido.</p>
+</details>
+<details>
+<summary>O atendimento consegue ver um pedido de outro cliente?</summary>
+<p>Sim: a consulta é feita por identificador do pedido e exige o token do atendimento, não o do cliente.</p>
+</details>
+</section>
+</div>
+<div class="part" data-part="detail">
+<h1 id="parte-ii-visão-técnica">Parte II — Visão técnica</h1>
+<section class="sec" data-section="architecture"><h2 id="arquitetura">Arquitetura</h2>
+<div class="diagram"><pre class="mermaid">flowchart LR
+    Loja["Loja"] --&gt; API["ApiFunction"]
+    API --&gt; DB[("PostgreSQL")]
+    API --&gt; Q["OrderCreatedQueue"]
+    S["ExpireOrdersSchedule"] --&gt; EXP["ExpireOrdersFunction"]
+    EXP --&gt; DB</pre></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Unidade</th><th>Tipo</th><th>Gatilho</th><th>Runtime</th><th>Timeout</th></tr></thead>
+<tbody>
+<tr><td><code>ApiFunction</code></td><td>Função Lambda</td><td>HTTP (<code>HttpApi</code>, rota <code>/{proxy+}</code>)</td><td>.NET 8</td><td>30 s</td></tr>
+<tr><td><code>ExpireOrdersFunction</code></td><td>Função Lambda</td><td>Agenda <code>ExpireOrdersSchedule</code></td><td>.NET 8</td><td>120 s</td></tr>
+<tr><td><code>OrderCreatedQueue</code></td><td>Fila SQS</td><td>Recebe um evento por pedido criado</td><td>—</td><td>—</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="sec" data-section="codebase"><h2 id="organização-do-código">Organização do código</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Projeto / pasta</th><th>Responsabilidade</th></tr></thead>
+<tbody>
+<tr><td><code>src/Orders.Api</code></td><td>API HTTP: rotas em <code>src/Orders.Api/Endpoints/OrdersEndpoints.cs</code></td></tr>
+<tr><td><code>src/Orders.Consumer</code></td><td>Processo de expiração: <code>src/Orders.Consumer/ExpireOrders.cs</code></td></tr>
+<tr><td><code>tests/Orders.Tests</code></td><td>Testes de unidade (xUnit)</td></tr>
+</tbody>
+</table></div>
+<p>Toda rota nova entra em <code>OrdersEndpoints.Map</code>, com uma linha <code>app.MapGet</code>/<code>app.MapPost</code>.</p>
+</section>
+<section class="sec" data-section="data-model"><h2 id="modelo-de-dados">Modelo de dados</h2>
+<p>Um banco PostgreSQL com a tabela <code>Orders</code> (identificador, situação, data de criação, valor). O servidor vem de <code>Database__Server</code>, definido pela pilha.</p>
+</section>
+<section class="sec" data-section="api"><h2 id="contratos-da-api">Contratos da API</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Método</th><th>Rota</th><th>Finalidade</th><th>Autorização</th><th>Respostas</th></tr></thead>
+<tbody>
+<tr><td><code>GET</code></td><td><code>/orders/{id}</code></td><td>Consulta um pedido</td><td>Token do atendimento</td><td>200, 404</td></tr>
+<tr><td><code>POST</code></td><td><code>/orders</code></td><td>Cria um pedido pendente</td><td>Token da loja</td><td>201, 400</td></tr>
+<tr><td><code>GET</code></td><td><code>/health</code></td><td>Verificação de saúde</td><td>Nenhuma</td><td>200</td></tr>
+<tr><td><code>ANY</code></td><td><code>/{proxy+}</code></td><td>Rota coringa do <code>HttpApi</code>: entrega qualquer outra rota à <code>ApiFunction</code>, onde o roteamento é feito pelo código</td><td>Conforme a rota</td><td>—</td></tr>
+</tbody>
+</table></div>
+<p>Rotas novas não exigem mudança na pilha: basta registrá-las em <code>OrdersEndpoints.Map</code>.</p>
+</section>
+<section class="sec" data-section="messaging"><h2 id="eventos-e-mensageria">Eventos e mensageria</h2>
+<p>A fila <code>OrderCreatedQueue</code> (nome <code>orders-created-{env}</code>) recebe um evento por pedido criado. O produtor é a <code>ApiFunction</code>; os consumidores ficam em outros serviços.</p>
+</section>
+<section class="sec" data-section="jobs"><h2 id="processos-automáticos">Processos automáticos</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Processo</th><th>Gatilho</th><th>O que faz</th><th>Timeout</th><th>Em caso de falha</th></tr></thead>
+<tbody>
+<tr><td><code>ExpireOrdersSchedule</code> → <code>ExpireOrdersFunction</code></td><td><code>rate(1 hour)</code></td><td>Expira pedidos pendentes há mais de <code>Expiration__Hours</code> horas</td><td>120 s</td><td>A próxima execução retoma</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="sec" data-section="integrations"><h2 id="integrações-externas">Integrações externas</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Dependência</th><th>Protocolo</th><th>Para que usamos</th><th>Autenticação</th><th>Se estiver fora do ar</th></tr></thead>
+<tbody>
+<tr><td>Serviço de pagamentos</td><td>HTTP, base em <code>Payments__BaseUrl</code></td><td>Confirmar pagamentos</td><td>Chave em <code>Payments:ApiKey</code> (SSM)</td><td>O pedido continua pendente</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="sec" data-section="code-walkthrough"><h2 id="explicação-do-código">Explicação do código</h2>
+<details>
+<summary>Criação de pedido</summary>
+<p><code>OrdersEndpoints.Map</code> registra <code>POST /orders</code>, grava o pedido como pendente e publica o evento. A variável <code>ORDERS_DEBUG</code> liga logs detalhados.</p>
+</details>
+</section>
+<section class="sec" data-section="configuration"><h2 id="configuração-por-ambiente">Configuração por ambiente</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Tipo</th><th>Onde vive</th><th>Como muda</th></tr></thead>
+<tbody>
+<tr><td>Parâmetros e segredos</td><td>SSM sob o prefixo <code>/orders-service/{env}</code> (<code>/orders-service/dev</code>, <code>/orders-service/prod</code>; <code>/orders-service/local</code> no modo local)</td><td>Sem deploy</td></tr>
+<tr><td>Valores da pilha</td><td>Variáveis em <code>src/template.yaml</code></td><td>Deploy</td></tr>
+<tr><td>Padrões locais</td><td>Seções <code>Database</code>, <code>Payments</code> e <code>SSM</code> de <code>src/Orders.Api/appsettings.json</code></td><td>Edição local</td></tr>
+</tbody>
+</table></div>
+<p>Ambientes publicados: <code>dev</code> e <code>prod</code> (<code>src/samconfig.yml</code>). Cada um define os parâmetros da pilha <code>Stage</code> (nome do ambiente, sem padrão) e <code>SSMPrefix</code> (padrão <code>/orders-service/local</code>).</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Ambiente</th><th>Nome</th><th>Valor</th><th>Tipo</th><th>Quem fornece</th></tr></thead>
+<tbody>
+<tr><td>dev, prod</td><td><code>/orders-service/{env}/Database/Password</code></td><td><em>secreto</em></td><td>SecureString</td><td>DBA</td></tr>
+<tr><td>dev, prod</td><td><code>/orders-service/{env}/Payments/ApiKey</code></td><td><em>secreto</em></td><td>SecureString</td><td>Time Pagamentos</td></tr>
+</tbody>
+</table></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Variável definida pela pilha</th><th>Valor</th></tr></thead>
+<tbody>
+<tr><td><code>Database__Server</code></td><td><code>orders-{env}.cluster.local</code></td></tr>
+<tr><td><code>SSM__Prefix</code></td><td><code>/orders-service/{env}</code></td></tr>
+<tr><td><code>Payments__BaseUrl</code></td><td><code>https://payments.example.com</code></td></tr>
+<tr><td><code>Expiration__Hours</code></td><td><code>48</code> (só na <code>ExpireOrdersFunction</code>)</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="sec" data-section="security"><h2 id="segurança-e-permissões">Segurança e permissões</h2>
+<p>As rotas de pedido exigem token; <code>/health</code> é pública. Os arquivos <code>src/Orders.Api/appsettings.json</code> e <code>src/docker-compose.yml</code> têm uma senha local em texto puro: mover para variável de ambiente local e trocar a senha.</p>
+</section>
+<section class="sec" data-section="observability"><h2 id="observabilidade">Observabilidade</h2>
+<p>Os logs das funções vão para o CloudWatch, um grupo por função. Para achar uma expiração: filtre por <code>ExpireOrders</code> no grupo da <code>ExpireOrdersFunction</code>.</p>
+</section>
+<section class="sec" data-section="run-local"><h2 id="como-rodar-localmente">Como rodar localmente</h2>
+<p><strong>Pré-requisitos.</strong> .NET 8 SDK e Docker. O <code>src/docker-compose.yml</code> sobe o <code>postgres</code>.</p>
+<p>Derivado de <code>src/docker-compose.yml</code> e do projeto <code>src/Orders.Api</code>; não executado (exige Docker e .NET 8).</p>
+<pre><code class="language-bash">docker compose -f src/docker-compose.yml up -d
+dotnet run --project src/Orders.Api</code></pre>
+</section>
+<section class="sec" data-section="tests"><h2 id="testes">Testes</h2>
+<p>O projeto <code>Orders.Tests</code> tem os testes de unidade (xUnit) e não precisa de banco.</p>
+<p>Derivado de <code>tests/Orders.Tests/Orders.Tests.csproj</code>; não executado (exige .NET 8).</p>
+<pre><code class="language-bash">dotnet test tests/Orders.Tests</code></pre>
+</section>
+<section class="sec" data-section="deploy"><h2 id="deploy-rollout-e-rollback">Deploy, rollout e rollback</h2>
+<p>A esteira <code>azure-pipelines.yml</code> roda a cada commit na <code>main</code>: estágio Build e depois Deploy no ambiente <code>dev</code>. PROD é publicado com <code>sam deploy --config-env prod</code>. Para reverter, publique de novo a versão anterior.</p>
+</section>
+<section class="sec" data-section="dev-decisions"><h2 id="decisões-técnicas">Decisões técnicas</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Decisão</th><th>Motivo</th><th>Alternativas descartadas</th><th>Consequência</th><th>Fonte</th></tr></thead>
+<tbody>
+<tr><td>Expiração por agenda horária</td><td>Simples e barato</td><td>Fila com atraso por pedido</td><td>Até 1 hora de atraso na expiração</td><td><code>src/template.yaml</code></td></tr>
+</tbody>
+</table></div>
+</section>
+</div>
+<div class="part" data-part="appendix">
+<h1 id="parte-iii-apoio">Parte III — Apoio</h1>
+<section class="sec" data-section="risks"><h2 id="riscos-e-dívidas">Riscos e dívidas</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Risco</th><th>Impacto</th><th>Severidade</th><th>Mitigação</th></tr></thead>
+<tbody>
+<tr><td>Senha local em texto puro em <code>src/Orders.Api/appsettings.json</code> e <code>src/docker-compose.yml</code></td><td>Vazamento se reutilizada</td><td>Baixa</td><td>Mover para variável de ambiente</td></tr>
+<tr><td>Expiração com até 1 hora de atraso</td><td>Estoque preso por mais tempo</td><td>Baixa</td><td>Aceito</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="sec" data-section="open-questions"><h2 id="perguntas-em-aberto">Perguntas em aberto</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Pergunta</th><th>Por que importa</th><th>Quem pode responder</th></tr></thead>
+<tbody>
+<tr><td>Quem consome a fila <code>orders-created</code>?</td><td>Mudanças no evento podem quebrar consumidores</td><td>Arquitetura</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="sec" data-section="faq-technical"><h2 id="perguntas-e-respostas-técnicas">Perguntas e respostas técnicas</h2>
+<details>
+<summary>Onde mudo o prazo de expiração?</summary>
+<p>Na variável <code>Expiration__Hours</code> da <code>ExpireOrdersFunction</code>, em <code>src/template.yaml</code>, com deploy.</p>
+</details>
+<details>
+<summary>Onde registro uma rota nova?</summary>
+<p>Em <code>OrdersEndpoints.Map</code>, no arquivo <code>src/Orders.Api/Endpoints/OrdersEndpoints.cs</code>; a rota coringa do <code>HttpApi</code> já entrega a chamada à <code>ApiFunction</code>.</p>
+</details>
+<details>
+<summary>Como ligo os logs detalhados?</summary>
+<p>Defina a variável <code>ORDERS_DEBUG</code> na função; ela é lida em <code>OrdersEndpoints.Map</code>.</p>
+</details>
+</section>
+<section class="sec" data-section="troubleshooting"><h2 id="solução-de-problemas">Solução de problemas</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Sintoma</th><th>Causa provável</th><th>Como confirmar</th><th>Como resolver</th></tr></thead>
+<tbody>
+<tr><td>Pedidos não expiram</td><td>Agenda desligada ou função falhando</td><td>Logs da <code>ExpireOrdersFunction</code></td><td>Corrigir o erro e aguardar a próxima hora</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="sec" data-section="glossary"><h2 id="glossário">Glossário</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Termo</th><th>Significado</th></tr></thead>
+<tbody>
+<tr><td>Pedido pendente</td><td>Pedido criado e ainda não pago</td></tr>
+<tr><td>SSM</td><td>Parameter Store da AWS, onde ficam parâmetros e segredos</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="sec" data-section="references"><h2 id="referências">Referências</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Documento</th><th>Para que serve</th></tr></thead>
+<tbody>
+<tr><td><code>README.md</code></td><td>Visão rápida do repositório</td></tr>
+</tbody>
+</table></div>
+<p><strong>Como esta wiki é mantida.</strong> O <code>.md</code> é a fonte e o <code>.html</code> é gerado pela skill <code>document-anything</code>.</p>
+</section>
+</div>
+<footer class="doc-footer">Gerado por document-anything 1.0.0 a partir de <code>orders-service.md</code>. O Markdown é a fonte; edite-o e gere esta página novamente.</footer>
+  </main>
+</div>
+<button class="to-top" id="toTop" aria-label="Voltar ao topo">↑</button>
+<script>window.WIKI_I18N = {"found": "{s} seção(ões) · {n} ocorrência(s)", "notFound": "Nada encontrado", "copy": "Copiar", "copied": "Copiado"};</script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script>
+(function () {
+  var I18N = window.WIKI_I18N || {};
+  var root = document.documentElement;
+  var store = {
+    get: function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+    set: function (k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  };
+
+  /* ---------- theme ---------- */
+  var saved = store.get('wiki-theme');
+  if (saved === 'dark' || saved === 'light') root.setAttribute('data-theme', saved);
+  function isDark() {
+    var t = root.getAttribute('data-theme');
+    if (t) return t === 'dark';
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+
+  /* ---------- mermaid (CDN; without it the diagram source stays readable) ---------- */
+  var diagrams = Array.prototype.slice.call(document.querySelectorAll('pre.mermaid'));
+  diagrams.forEach(function (d) { d.setAttribute('data-src', d.textContent); });
+  function renderDiagrams() {
+    if (!window.mermaid || !diagrams.length) return;
+    diagrams.forEach(function (d) {
+      d.removeAttribute('data-processed');
+      d.innerHTML = '';
+      d.textContent = d.getAttribute('data-src');
+    });
+    try {
+      window.mermaid.initialize({ startOnLoad: false, theme: isDark() ? 'dark' : 'default', securityLevel: 'strict',
+        flowchart: { htmlLabels: true, curve: 'basis' }, sequence: { useMaxWidth: true } });
+      window.mermaid.run({ nodes: diagrams });
+    } catch (e) { /* keep the source text visible */ }
+  }
+  renderDiagrams();
+
+  document.getElementById('themeBtn').addEventListener('click', function () {
+    var next = isDark() ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    store.set('wiki-theme', next);
+    renderDiagrams();
+  });
+
+  /* ---------- view filter (overview / detail) ---------- */
+  var parts = document.querySelectorAll('.part');
+  var viewBtns = document.querySelectorAll('.seg button');
+  function applyView(v) {
+    viewBtns.forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-view') === v)); });
+    parts.forEach(function (p) {
+      var kind = p.getAttribute('data-part');
+      var show = v === 'all' || kind === v || (kind !== 'overview' && kind !== 'detail');
+      p.classList.toggle('hidden-by-filter', !show);
+    });
+    syncToc();
+    store.set('wiki-view', v);
+  }
+  viewBtns.forEach(function (b) { b.addEventListener('click', function () { applyView(b.getAttribute('data-view')); }); });
+
+  /* ---------- table of contents ---------- */
+  var tocLinks = Array.prototype.slice.call(document.querySelectorAll('nav.toc a'));
+  function targetOf(a) { return document.getElementById(decodeURIComponent(a.getAttribute('href').slice(1))); }
+  function syncToc() {
+    tocLinks.forEach(function (a) {
+      var target = targetOf(a);
+      var hidden = !target || target.closest('.hidden-by-filter, .search-empty');
+      a.parentElement.classList.toggle('hidden', !!hidden);
+    });
+  }
+  var headings = tocLinks.map(targetOf).filter(Boolean);
+  if ('IntersectionObserver' in window) {
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) {
+          tocLinks.forEach(function (a) { a.classList.toggle('active', targetOf(a) === en.target); });
+        }
+      });
+    }, { rootMargin: '0px 0px -75% 0px' });
+    headings.forEach(function (h) { obs.observe(h); });
+  }
+
+  /* ---------- expand / collapse ---------- */
+  function setAll(open) { document.querySelectorAll('details').forEach(function (d) { d.open = open; }); }
+  document.getElementById('expandAll').addEventListener('click', function () { setAll(true); });
+  document.getElementById('collapseAll').addEventListener('click', function () { setAll(false); });
+  window.addEventListener('beforeprint', function () { setAll(true); });
+
+  /* ---------- copy buttons on code blocks ---------- */
+  document.querySelectorAll('pre > code').forEach(function (code) {
+    var btn = document.createElement('button');
+    btn.className = 'btn copy';
+    btn.type = 'button';
+    btn.textContent = I18N.copy || 'Copy';
+    btn.addEventListener('click', function () {
+      var done = function () { btn.textContent = I18N.copied || 'Copied'; setTimeout(function () { btn.textContent = I18N.copy || 'Copy'; }, 1400); };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(code.textContent).then(done, function () {});
+    });
+    code.parentNode.appendChild(btn);
+  });
+
+  /* ---------- search ---------- */
+  var q = document.getElementById('q');
+  var info = document.getElementById('searchInfo');
+  var sections = Array.prototype.slice.call(document.querySelectorAll('section.sec'));
+  var marks = [];
+  function clearMarks() {
+    marks.forEach(function (m) {
+      var p = m.parentNode; if (!p) return;
+      p.replaceChild(document.createTextNode(m.textContent), m); p.normalize();
+    });
+    marks = [];
+  }
+  function highlight(node, term) {
+    var walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT, {
+      acceptNode: function (n) {
+        if (!n.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+        var tag = n.parentNode && n.parentNode.nodeName;
+        if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'MARK' || tag === 'BUTTON') return NodeFilter.FILTER_REJECT;
+        if (n.parentNode.closest && n.parentNode.closest('.diagram')) return NodeFilter.FILTER_REJECT;
+        return n.nodeValue.toLowerCase().indexOf(term) >= 0 ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+      }
+    });
+    var list = []; while (walker.nextNode()) list.push(walker.currentNode);
+    list.forEach(function (t) {
+      var val = t.nodeValue, low = val.toLowerCase(), i = 0, idx, frag = document.createDocumentFragment();
+      while ((idx = low.indexOf(term, i)) >= 0) {
+        frag.appendChild(document.createTextNode(val.slice(i, idx)));
+        var m = document.createElement('mark'); m.textContent = val.slice(idx, idx + term.length);
+        frag.appendChild(m); marks.push(m); i = idx + term.length;
+      }
+      frag.appendChild(document.createTextNode(val.slice(i)));
+      t.parentNode.replaceChild(frag, t);
+    });
+  }
+  function openAncestors(el) {
+    var d = el.closest('details'); while (d) { d.open = true; d = d.parentElement && d.parentElement.closest('details'); }
+  }
+  var timer;
+  q.addEventListener('input', function () {
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      clearMarks();
+      var term = q.value.trim().toLowerCase();
+      if (term.length < 2) {
+        sections.forEach(function (s) { s.classList.remove('hidden-by-filter'); });
+        parts.forEach(function (p) { p.classList.remove('search-empty'); });
+        info.textContent = ''; syncToc(); return;
+      }
+      var hits = 0;
+      sections.forEach(function (s) {
+        var match = s.textContent.toLowerCase().indexOf(term) >= 0;
+        s.classList.toggle('hidden-by-filter', !match);
+        if (match) { hits++; highlight(s, term); }
+      });
+      parts.forEach(function (p) {
+        var own = p.querySelectorAll('section.sec');
+        var none = own.length > 0 && !p.querySelector('section.sec:not(.hidden-by-filter)');
+        p.classList.toggle('search-empty', none);
+      });
+      marks.forEach(openAncestors);
+      info.textContent = hits
+        ? (I18N.found || '{s} section(s) · {n} match(es)').replace('{s}', hits).replace('{n}', marks.length)
+        : (I18N.notFound || 'Nothing found');
+      syncToc();
+      if (marks[0]) marks[0].scrollIntoView({ block: 'center' });
+    }, 220);
+  });
+
+  /* ---------- mobile navigation and back-to-top ---------- */
+  document.getElementById('navToggle').addEventListener('click', function () { document.body.classList.toggle('nav-open'); });
+  tocLinks.forEach(function (a) { a.addEventListener('click', function () { document.body.classList.remove('nav-open'); }); });
+  var toTop = document.getElementById('toTop');
+  window.addEventListener('scroll', function () { toTop.classList.toggle('show', window.scrollY > 800); }, { passive: true });
+  toTop.addEventListener('click', function () { window.scrollTo({ top: 0 }); });
+
+  /* ---------- open <details> when navigating to an anchor inside it ---------- */
+  function openTarget() {
+    var id = decodeURIComponent(location.hash.slice(1)); if (!id) return;
+    var el = document.getElementById(id); if (el) openAncestors(el);
+  }
+  window.addEventListener('hashchange', openTarget); openTarget();
+
+  var v = store.get('wiki-view'); applyView(v === 'overview' || v === 'detail' ? v : 'all');
+})();
+</script>
+</body>
+</html>

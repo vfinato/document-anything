@@ -1,0 +1,231 @@
+{
+  "type": "library",
+  "family": "code",
+  "label": {
+    "pt-BR": "Biblioteca / SDK",
+    "en": "Library / SDK"
+  },
+  "summary": "Code consumed by other code: a package, SDK, client, shared kernel or framework extension.",
+  "view_labels": {
+    "pt-BR": [
+      "Tudo",
+      "Para quem usa",
+      "Para quem mantém"
+    ],
+    "en": [
+      "All",
+      "For users",
+      "For maintainers"
+    ]
+  },
+  "parts": {
+    "overview": {
+      "pt-BR": "Parte I — Para quem usa",
+      "en": "Part I — For users"
+    },
+    "detail": {
+      "pt-BR": "Parte II — Para quem mantém",
+      "en": "Part II — For maintainers"
+    }
+  },
+  "sections": {
+    "intro": [
+      "about"
+    ],
+    "overview": [
+      "summary",
+      "problem",
+      "capabilities",
+      "consumers",
+      "quick-start",
+      "public-api",
+      "configuration-options",
+      "compatibility",
+      "faq-business"
+    ],
+    "detail": [
+      "architecture",
+      "codebase",
+      "code-walkthrough",
+      "development",
+      "tests",
+      "publishing",
+      "security",
+      "dev-decisions",
+      "history?"
+    ],
+    "appendix": [
+      "risks",
+      "open-questions",
+      "faq-technical",
+      "troubleshooting",
+      "glossary",
+      "references"
+    ]
+  },
+  "extra_sections": {
+    "consumers": {
+      "title": {
+        "pt-BR": "Quem usa",
+        "en": "Who uses it"
+      },
+      "checks": [
+        "table"
+      ],
+      "columns": {
+        "pt-BR": [
+          "Consumidor",
+          "Para que usa",
+          "Versão em uso",
+          "Time"
+        ],
+        "en": [
+          "Consumer",
+          "What for",
+          "Version in use",
+          "Team"
+        ]
+      },
+      "must": "Known consumers (repos, services, teams), what they use it for and which version, from the sources available. Unknown consumers go to open-questions."
+    },
+    "quick-start": {
+      "title": {
+        "pt-BR": "Começo rápido",
+        "en": "Quick start"
+      },
+      "checks": [
+        "code",
+        "example"
+      ],
+      "must": "Install command (shell block) and the smallest working usage example in the library's language, copied or derived from tests/samples, labelled accordingly."
+    },
+    "public-api": {
+      "title": {
+        "pt-BR": "API pública",
+        "en": "Public API"
+      },
+      "checks": [
+        "table"
+      ],
+      "columns": {
+        "pt-BR": [
+          "Tipo / função",
+          "Para que serve",
+          "Principais parâmetros",
+          "Erros / exceções"
+        ],
+        "en": [
+          "Type / function",
+          "Purpose",
+          "Key parameters",
+          "Errors / exceptions"
+        ]
+      },
+      "must": "Every exported entry point a consumer can call or extend, grouped by area, with a collapsible example for the non-trivial ones. Mark what is internal or unstable."
+    },
+    "configuration-options": {
+      "title": {
+        "pt-BR": "Opções de configuração",
+        "en": "Configuration options"
+      },
+      "na": true,
+      "checks": [
+        "table"
+      ],
+      "columns": {
+        "pt-BR": [
+          "Opção",
+          "Padrão",
+          "Efeito"
+        ],
+        "en": [
+          "Option",
+          "Default",
+          "Effect"
+        ]
+      },
+      "must": "Every option, setting, environment variable or DI registration knob the library reads, with default and effect."
+    },
+    "compatibility": {
+      "title": {
+        "pt-BR": "Compatibilidade e versionamento",
+        "en": "Compatibility and versioning"
+      },
+      "checks": [
+        "table"
+      ],
+      "columns": {
+        "pt-BR": [
+          "Plataforma / dependência",
+          "Versões suportadas",
+          "Observação"
+        ],
+        "en": [
+          "Platform / dependency",
+          "Supported versions",
+          "Notes"
+        ]
+      },
+      "must": "Supported runtimes, frameworks and peer dependencies; versioning policy (semver?), what counts as breaking, deprecation policy, migration notes between majors."
+    },
+    "development": {
+      "title": {
+        "pt-BR": "Como desenvolver",
+        "en": "Development"
+      },
+      "checks": [
+        "code"
+      ],
+      "must": "Prerequisites, build, how to try local changes in a consuming project (link/pack/local feed), formatting/lint, each shell block labelled as run, copied or derived."
+    },
+    "publishing": {
+      "title": {
+        "pt-BR": "Publicação",
+        "en": "Publishing"
+      },
+      "must": "Registry/feed, package name(s), how a version is cut (pipeline, tags, changelog), who can publish, how consumers learn about releases, how to unpublish/deprecate."
+    }
+  },
+  "overrides": {
+    "problem": {
+      "title": {
+        "pt-BR": "Por que existe",
+        "en": "Why it exists"
+      }
+    },
+    "architecture": {
+      "must": "Internal design: main components and how they collaborate (diagram), extension points, threading/async model, I/O performed."
+    }
+  },
+  "coverage": {
+    "kinds": [
+      "package",
+      "env_var",
+      "config_key",
+      "pipeline",
+      "test_suite",
+      "plaintext_secret"
+    ],
+    "home": {
+      "package": [
+        "publishing",
+        "quick-start"
+      ],
+      "env_var": [
+        "configuration-options"
+      ],
+      "config_key": [
+        "configuration-options"
+      ],
+      "test_suite": [
+        "tests"
+      ],
+      "plaintext_secret": {
+        "all": [
+          "security",
+          "risks"
+        ]
+      }
+    }
+  }
+}
