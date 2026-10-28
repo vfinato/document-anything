@@ -56,13 +56,19 @@ class InstallerTests(unittest.TestCase):
                         ["node", str(CLI), "where", "--agent", agent],
                         cwd=project, env=env, capture_output=True, text=True, check=True,
                     )
-                    self.assertEqual(Path(result.stdout.strip()), home.joinpath(*user_parts, "document-anything"))
+                    self.assertEqual(
+                        Path(result.stdout.strip()).resolve(),
+                        home.joinpath(*user_parts, "document-anything").resolve(),
+                    )
                 with self.subTest(agent=agent, scope="project"):
                     result = subprocess.run(
                         ["node", str(CLI), "where", "--agent", agent, "--project"],
                         cwd=project, env=env, capture_output=True, text=True, check=True,
                     )
-                    self.assertEqual(Path(result.stdout.strip()), project.joinpath(*project_parts, "document-anything"))
+                    self.assertEqual(
+                        Path(result.stdout.strip()).resolve(),
+                        project.joinpath(*project_parts, "document-anything").resolve(),
+                    )
 
 
 class InlineTests(unittest.TestCase):
